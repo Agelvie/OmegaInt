@@ -78,7 +78,7 @@ int main(int argc, char const *argv[])
 		// 	if ( i >= a.size() ){ i = a.size(); }
 		// }
 
-	megaInt X("12345678901234567890");
+	OmegaInt X("12345678901234567890");
 	X.print();
 
 	return 0;

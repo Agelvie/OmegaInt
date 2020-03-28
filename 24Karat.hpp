@@ -15,7 +15,7 @@ using std::cout;
 using std::endl;
 using std::string;
 
-class megaInt
+class OmegaInt
 {
 	private:
 		// Number of pieces the number is split into
@@ -24,53 +24,55 @@ class megaInt
 	u64* NUMBERS;
 		// Sing, is it positive?
 	bool isPOSITIVE;
+		// Copy function
+	void _copy(OmegaInt const & other)
 
 	public:
 	// Construction and Deletion
 		// Empty
-	megaInt();
+	OmegaInt();
 		// From a number represented in a string
-	megaInt(string num);
+	OmegaInt(string num);
 		// Number of fields and sing setted all to zero
-	megaInt(u64 fields, bool pos);
+	OmegaInt(u64 fields, bool pos);
 		// Number of fields and sing setted all to a value
-	megaInt(u64 fields, u64* nums, bool pos);
+	OmegaInt(u64 fields, u64* nums, bool pos);
 		// Copy constructor
-	megaInt(megaInt const & other);
+	OmegaInt(OmegaInt const & other);
 		// Destructor
-	~megaInt();
+	~OmegaInt();
 
 	// Assingment Operator
-	megaInt const & operator= (megaInt const & other);
+	OmegaInt const & operator= (OmegaInt const & other);
 
 	// Getters
-		// Returns the number of fields in the megaInt
-	long fields();
-		// Returns the sing of the megaInt
-	bool sing();
+		// Returns the number of fields in the OmegaInt
+	unsigned fields() const;
+		// Returns the sing of the OmegaInt
+	bool sing() const;
 
 	// Setter
-		// Changes the sing of the megaInt
+		// Changes the sing of the OmegaInt
 	void changeSing();
 
 	// Getter and Setter? Make private?
-	u64 operator [] (unsigned i);
+	u64 operator [] (const unsigned i) const;
 
 	// Comparison Operators
-	friend bool operator == (const megaInt &A, const megaInt &B);
-    friend bool operator != (const megaInt &A, const megaInt &B);
-    friend bool operator >  (const megaInt &A, const megaInt &B);
-    friend bool operator >= (const megaInt &A, const megaInt &B);
-    friend bool operator <  (const megaInt &A, const megaInt &B);
-    friend bool operator <= (const megaInt &A, const megaInt &B);
+	friend bool operator == (const OmegaInt &A, const OmegaInt &B);
+	friend bool operator != (const OmegaInt &A, const OmegaInt &B);
+	friend bool operator >  (const OmegaInt &A, const OmegaInt &B);
+	friend bool operator >= (const OmegaInt &A, const OmegaInt &B);
+	friend bool operator <  (const OmegaInt &A, const OmegaInt &B);
+	friend bool operator <= (const OmegaInt &A, const OmegaInt &B);
 
-    // Arithmetic Operators
-	megaInt operator + (megaInt const & other) const;
-	megaInt operator - (megaInt const & other) const;
-	megaInt operator * (megaInt const & other) const;
-	megaInt operator / (megaInt const & other) const;
+	// Arithmetic Operators
+	OmegaInt operator + (OmegaInt const & other) const;
+	OmegaInt operator - (OmegaInt const & other) const;
+	OmegaInt operator * (OmegaInt const & other) const;
+	OmegaInt operator / (OmegaInt const & other) const;
 
 	// Output Methods
 	void print();
-    friend std::ostream& operator<<(std::ostream & os, const megaInt & A);
+	friend std::ostream& operator<<(std::ostream & os, const OmegaInt & A);
 };
