@@ -11,6 +11,10 @@ typedef unsigned long long u64;
 // Maximum number of digits a field can have. (System depedent)
 const unsigned MAXDIGITS = floor(std::numeric_limits<u64>::digits * log10(2) / 2);
 
+// Maximum value that a field can have. (System depedent)
+const u64 MAXFIELDVALUE = pow(10,MAXDIGITS) - 1;
+// #define MAXFIELDVALUE (pow(10,MAXDIGITS) - 1);
+
 using std::cout;
 using std::endl;
 using std::string;
@@ -25,7 +29,11 @@ class OmegaInt
 		// Sing, is it positive?
 	bool isPOSITIVE;
 		// Copy function
-	void _copy(OmegaInt const & other)
+	void _copy(OmegaInt const & other);
+		// Addition function
+	OmegaInt _add(OmegaInt const & other) const;
+		// Subtraction function
+	OmegaInt _subtract(OmegaInt const & other) const;
 
 	public:
 	// Construction and Deletion
@@ -54,17 +62,20 @@ class OmegaInt
 	// Setter
 		// Changes the sing of the OmegaInt
 	void changeSing();
+		// set field 'i' to a value
+	void set (const unsigned i, u64 value);
 
-	// Getter and Setter? Make private?
+
+	// Getter
 	u64 operator [] (const unsigned i) const;
 
 	// Comparison Operators
-	friend bool operator == (const OmegaInt &A, const OmegaInt &B);
-	friend bool operator != (const OmegaInt &A, const OmegaInt &B);
-	friend bool operator >  (const OmegaInt &A, const OmegaInt &B);
-	friend bool operator >= (const OmegaInt &A, const OmegaInt &B);
-	friend bool operator <  (const OmegaInt &A, const OmegaInt &B);
-	friend bool operator <= (const OmegaInt &A, const OmegaInt &B);
+	bool operator == (OmegaInt const &other) const;
+	bool operator != (const OmegaInt &other) const;
+	bool operator >  (const OmegaInt &other) const;
+	bool operator >= (const OmegaInt &other) const;
+	bool operator <= (const OmegaInt &other) const;
+	bool operator <  (const OmegaInt &other) const;
 
 	// Arithmetic Operators
 	OmegaInt operator + (OmegaInt const & other) const;
@@ -74,5 +85,5 @@ class OmegaInt
 
 	// Output Methods
 	void print();
-	friend std::ostream& operator<<(std::ostream & os, const OmegaInt & A);
+	std::ostream& operator<<(std::ostream & os);
 };

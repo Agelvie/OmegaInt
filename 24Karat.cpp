@@ -50,6 +50,9 @@ OmegaInt::OmegaInt(u64 fields, bool pos)
 
 	NUMBERS = (u64*) calloc( TOTALFIELDS, sizeof(u64) );
 
+	for (unsigned i = 0; i < TOTALFIELDS; ++i)
+		{ NUMBERS[i] = 0; }
+
 	isPOSITIVE = pos;
 };
 
@@ -77,7 +80,7 @@ OmegaInt::OmegaInt(OmegaInt const & other)
 OmegaInt::~OmegaInt(){ free(NUMBERS); NUMBERS = NULL; };
 
 	// Assingment Operator
-OmegaInt::OmegaInt const & operator= (OmegaInt const & other)
+OmegaInt const & OmegaInt::operator= (OmegaInt const & other)
 {
 	if (this != &other) { _copy(other); }
     return *this;
@@ -104,29 +107,140 @@ bool OmegaInt::sing() const { return isPOSITIVE; }
 
 // Setter
 	// Changes the sing of the OmegaInt
-void OmegaInt::changeSing(){ isPOSITIVE = !isPOSITIVE };
+void OmegaInt::changeSing(){ isPOSITIVE = !isPOSITIVE; };
 
 // Getter and Setter? Make private?
 u64 OmegaInt::operator [] (const unsigned i) const { return NUMBERS[i]; }
 
+void OmegaInt::set (const unsigned i, u64 value) { NUMBERS[i] = value; }
+
 // Comparison Operators
-friend bool operator == (const OmegaInt &A, const OmegaInt &B)
+bool OmegaInt::operator == (const OmegaInt &other) const
 {
-	if (A.sing() != B.sing()){ return false }
+	const OmegaInt A = *this;
+	const OmegaInt& B = other;
+	bool equalLength = A.fields() == B.fields();	// Different lenghts does NOT nesesarily mean
+	bool isAlonger = A.fields() > B.fields();		// that they are different numbers
+	unsigned min = isAlonger? B.fields(): A.fields();	// Pick the shortest one
 
+	if (A.sing() != B.sing()){ return false; }
 
+	for (unsigned i = 0; i < min; ++i)
+		{ if (A[i] != B[i]){ return false; } }
 
+	// If higher pieces of longest number are not zero return false
+	if (!equalLength)
+	{
+		if (isAlonger)
+		{ for (unsigned i = min; i < A.fields(); ++i) { if (A[i] != 0){ return false; } } }
+		else
+		{ for (unsigned i = min; i < B.fields(); ++i) { if (B[i] != 0){ return false; } } }
+	}
 
-
+	return true;
 };
-friend bool operator != (const OmegaInt &A, const OmegaInt &B);
-friend bool operator >  (const OmegaInt &A, const OmegaInt &B);
-friend bool operator >= (const OmegaInt &A, const OmegaInt &B);
-friend bool operator <  (const OmegaInt &A, const OmegaInt &B);
-friend bool operator <= (const OmegaInt &A, const OmegaInt &B);
+
+bool OmegaInt::operator != (const OmegaInt &other) const
+{
+	return !(*this == other);
+};
+
+bool OmegaInt::operator >  (const OmegaInt &other) const
+{
+	const OmegaInt A = *this;
+	const OmegaInt& B = other;
+	bool equalLength = A.fields() == B.fields();	// Different lenghts does NOT nesesarily mean
+	bool isAlonger = A.fields() > B.fields();		// that they are different numbers
+	unsigned min = isAlonger? B.fields(): A.fields();	// Pick the shortest one
+	bool hasAgreaterABS;
+
+	// A is possitive an B negative
+	if (A.sing() and !B.sing()){ return true; }
+	
+	// A is negative an B positive
+	if (!A.sing() and B.sing()){ return false; }
+
+	if (!equalLength)
+	{
+		if (isAlonger)
+		{ for (unsigned i = min; i < A.fields(); ++i) { if (A[i] != 0){ hasAgreaterABS = true; } } }
+		else
+		{ for (unsigned i = min; i < B.fields(); ++i) { if (B[i] != 0){ hasAgreaterABS = false; } } }
+	}
+	else
+	{
+		unsigned i = min == 0? min : min - 1;
+		bool done = false;
+		while (!done and i >= 0)
+		{
+			if 		(A[i] > B[i]){ hasAgreaterABS = true; done = true; }
+			else if (A[i] < B[i]){ hasAgreaterABS = false; done = true; }
+			else 	{ i--; }
+		}
+	}
+
+	return (A.sing() and B.sing())? hasAgreaterABS : !hasAgreaterABS;
+};
+bool OmegaInt::operator >= (const OmegaInt &other) const
+{
+	return (*this == other) or (*this > other);
+};
+bool OmegaInt::operator <  (const OmegaInt &other) const
+{
+	return !(*this == other) or (*this > other);
+};
+bool OmegaInt::operator <= (const OmegaInt &other) const
+{
+	return (*this == other) or (*this < other);
+};
+
+OmegaInt OmegaInt::_add(OmegaInt const & other) const
+{
+	/* For simplicity alising ( this + other ) = ( A + B ) = RESULT */
+	const OmegaInt A = *this;
+	const OmegaInt& B = other;
+
+	unsigned min = A.fields() > B.fields()? B.fields() : A.fields();
+	unsigned Max = A.fields() > B.fields()? A.fields() : B.fields();
+	
+	OmegaInt RESULT( Max+1, true );
+
+	for (unsigned i = 0; i < min; ++i)
+		{ RESULT.set(i, A[i] + B[i]); }
+	for (unsigned i = min; i < Max; ++i)
+		{ RESULT.set(i, A.fields() > B.fields()? A[i] : B[i]); }
+
+	return RESULT;
+};
+
+// Arithmetic Operators
+OmegaInt OmegaInt::operator + (OmegaInt const & other) const
+{
+	OmegaInt RESULT;
+
+	if      (  this->sing() and  other.sing() )  { RESULT = this->_add(other); }
+	else if ( !this->sing() and  other.sing() )  { RESULT = other - *this; }
+	else if (  this->sing() and !other.sing() )  { RESULT = *this - other; }
+	else /* ( !this->sing() and !other.sing() )*/{ RESULT = this->_add(other); RESULT.changeSing(); }
+
+	return RESULT;
+};
+OmegaInt OmegaInt::operator - (OmegaInt const & other) const
+{
+	OmegaInt RESULT;
+
+	// if      (  this->sing() and  other.sing() )  { RESULT = this->_add(other); }
+	// else if ( !this->sing() and  other.sing() )  { RESULT = other - *this; }
+	// else if (  this->sing() and !other.sing() )  { RESULT = *this - other; }
+	// else /* ( !this->sing() and !other.sing() )*/{ RESULT = this->_add(other); RESULT.changeSing(); }
+
+	return RESULT;
+};
+OmegaInt OmegaInt::operator * (OmegaInt const & other) const{};
+OmegaInt OmegaInt::operator / (OmegaInt const & other) const{};
 
 
-
+// Output Methods
 void OmegaInt::print()
 {
 	for (unsigned i = 0; i < TOTALFIELDS; ++i)
@@ -145,35 +259,11 @@ void OmegaInt::print()
 	}
 	cout << endl;
 }
+   
 
-
-
-OmegaInt OmegaInt::operator + (OmegaInt const & other) const
+std::ostream& OmegaInt::operator<<(std::ostream & os)
 {
-	long top;
-	bool sing;
-	OmegaInt* RESULT = new OmegaInt(top,sing);
-
-	// Determine size and sing resulting from the operation
-	top = this->fields() > other.fields() ? this->fields() : top = other.fields();
-
-	sing = this->fields() >  other.fields() ? this->sing()   :
-		   this->fields() <  other.fields() ? other.fields() :
-		   this->fields() == other.fields() ? other[other.fields() -1] > (*this)[fields() -1] ? other.fields() : this -> sing();
-
-
-	for (long i = 0; i < top; ++i)
-	{
-		RESULT[i] = this.sing() == other.sing() ? (*this)[i] + other[i] : (*this)[i] - other[i];
-	}
-
-	return RESULT;
-}
-
-
-std::ostream& OmegaInt::operator<<(std::ostream & os, const Game & A)
-{
-	os << isPOSITIVE? : '' : '-';
+	os << (isPOSITIVE? NULL : '-');
 	for (unsigned i = TOTALFIELDS - 1; i >= 0; --i)
 	{
 		os << NUMBERS[i];
@@ -181,16 +271,3 @@ std::ostream& OmegaInt::operator<<(std::ostream & os, const Game & A)
 	
 	return os;
 }
-
-
-/*
-
-	// Arithmetic Operators
-	OmegaInt operator + (OmegaInt const & other) const;
-	OmegaInt operator - (OmegaInt const & other) const;
-	OmegaInt operator * (OmegaInt const & other) const;
-	OmegaInt operator / (OmegaInt const & other) const;
-
-	// Output Methods
-	void print();
-	friend std::ostream& operator<<(std::ostream & os, const OmegaInt & A);*/
