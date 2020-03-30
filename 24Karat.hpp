@@ -28,6 +28,8 @@ class OmegaInt
 	u64* NUMBERS;
 		// Sing, is it positive?
 	bool isPOSITIVE;
+		// Absolute value, returns the whole object
+	OmegaInt abs() const;
 		// Copy function
 	void _copy(OmegaInt const & other);
 		// Addition function

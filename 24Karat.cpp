@@ -1,7 +1,9 @@
 #include "24Karat.hpp"
-	//@TODO -- check that every field has less digits than MAXDIGITS
+	//@TODO -- check that every field is less than or equal to MAXFIELDVALUE
 	//@TODO -- if top fields are only zeros -> erase
 	//@TODO -- allocate new memory if final field is aproaching it's limit
+	//@TODO -- implement *
+	//@TODO -- implement /
 
 	// Empty
 OmegaInt::OmegaInt()
@@ -104,6 +106,14 @@ unsigned OmegaInt::fields() const { return TOTALFIELDS; }
 
 	// Returns the sing of the OmegaInt
 bool OmegaInt::sing() const { return isPOSITIVE; }
+	
+	// Absolute value, returns the whole object
+OmegaInt OmegaInt::abs() const
+{
+	OmegaInt A = *this;
+	if ( ! A.isPOSITIVE ){ A.changeSing(); }
+	return A;
+};
 
 // Setter
 	// Changes the sing of the OmegaInt
@@ -196,6 +206,7 @@ bool OmegaInt::operator <= (const OmegaInt &other) const
 
 OmegaInt OmegaInt::_add(OmegaInt const & other) const
 {
+	// ONLY returns positive OmegaInt's
 	/* For simplicity alising ( this + other ) = ( A + B ) = RESULT */
 	const OmegaInt A = *this;
 	const OmegaInt& B = other;
@@ -209,6 +220,50 @@ OmegaInt OmegaInt::_add(OmegaInt const & other) const
 		{ RESULT.set(i, A[i] + B[i]); }
 	for (unsigned i = min; i < Max; ++i)
 		{ RESULT.set(i, A.fields() > B.fields()? A[i] : B[i]); }
+
+	return RESULT;
+};
+
+OmegaInt OmegaInt::_subtract(OmegaInt const & other) const
+{
+	bool carry = false;
+	// returns OmegaInt's with APPROPRIATE given the operands
+	/* For simplicity alising ( this - other ) = ( A - B ) = RESULT */
+	const OmegaInt A = *this;
+	const OmegaInt& B = other;
+
+	unsigned min = A.fields() > B.fields()? B.fields() : A.fields();
+	unsigned Max = A.fields() > B.fields()? A.fields() : B.fields();
+	
+	OmegaInt RESULT( Max+1, true );
+
+	if (B.abs() > A.abs())
+	{
+		const OmegaInt C = B;
+		const OmegaInt B = A;
+		const OmegaInt A = C;
+		RESULT.changeSing();
+	}
+	
+// MAXFIELDVALUE
+	u64 temp;
+
+	for (unsigned i = 0; i < min; ++i)
+	{
+		// if ( A[i] >= B[i] ) { temp = A[i] - B[i] - (carry? 1 : 0); carry = false; }
+		// else { temp = MAXFIELDVALUE + A[i] - B[i] - (carry? 1 : 0); carry = true; }
+
+		temp = (A[i] < B[i]? MAXFIELDVALUE : 0) + A[i] - B[i] - (carry? 1 : 0);
+		carry = A[i] < B[i];
+
+		RESULT.set(i, temp);
+	}
+
+	for (unsigned i = min; i < Max; ++i)
+	{
+		RESULT.set(i, A[i] - (carry? 1 : 0));
+		carry = false;
+	}
 
 	return RESULT;
 };
@@ -229,16 +284,22 @@ OmegaInt OmegaInt::operator - (OmegaInt const & other) const
 {
 	OmegaInt RESULT;
 
-	// if      (  this->sing() and  other.sing() )  { RESULT = this->_add(other); }
-	// else if ( !this->sing() and  other.sing() )  { RESULT = other - *this; }
-	// else if (  this->sing() and !other.sing() )  { RESULT = *this - other; }
-	// else /* ( !this->sing() and !other.sing() )*/{ RESULT = this->_add(other); RESULT.changeSing(); }
+	if      (  this->sing() and  other.sing() )  { RESULT = this->_subtract(other); }
+	else if ( !this->sing() and  other.sing() )  { RESULT = this->_add(other); RESULT.changeSing(); }
+	else if (  this->sing() and !other.sing() )  { RESULT = this->_add(other); }
+	else /* ( !this->sing() and !other.sing() )*/{ RESULT = other._subtract(*this); }
 
 	return RESULT;
 };
-OmegaInt OmegaInt::operator * (OmegaInt const & other) const{};
-OmegaInt OmegaInt::operator / (OmegaInt const & other) const{};
+OmegaInt OmegaInt::operator * (OmegaInt const & other) const
+{
+	return other;
+};
+OmegaInt OmegaInt::operator / (OmegaInt const & other) const
+{
+	return other;
 
+};
 
 // Output Methods
 void OmegaInt::print()
