@@ -64,64 +64,24 @@ void test(std::string message, bool pass)
 };
 
 // int main(int argc, char const *argv[])
-void test();
+// void test();
 
 int main()
 {
-	// u64 a = atoll(argv[1]), b = atoll(argv[2]);
-
-	// splitInt(123456789, 5, a, b);
-	// cout << a << ' ' << b << endl;
-
-	// cout << a << 'x' << b << " = " << karatsuba(a,b) << endl;
-
-		// cout << ((string) "Hello world").size() << endl;
-		// cout << numeric_limits<unsigned long long>::digits << endl;
-		// cout << numeric_limits<unsigned long long>::digits * log10(2) << endl;
-		// cout << "ceil(19/7) = "<< 19/7 << " + " << (19%7 != 0) << endl;
-		// cout << "ceil(18/2) = "<< 18/2 << " + " << (18%2 != 0) << endl;
-		// string a = "Hello_World"; int i = 3;
-		// while (a.size() > 0)
-		// {
-		// 	cout << a.size() << ' ' << a.substr(a.size() - i, a.size()) << endl;
-		// 	a.erase(a.size() - i, a.size());
-		// 	if ( i >= a.size() ){ i = a.size(); }
-		// }
-
 	// OmegaInt X("12345678901234567890");
 	OmegaInt X("1234");
 	cout << "X = " << X << endl;
-	X.print();
 
 	OmegaInt Y("456");
 	cout << "Y = "<< Y << endl;
-	Y.print();
 
 	OmegaInt Z("-986");
 	cout << "Z = " << Z << endl;
-	Z.print();
 
-	// TEMPORAL: while templating operations with primitive types
-	OmegaInt zero(100000);
+	OmegaInt A(0);
+	cout << "A = " << A << endl;
 
-	cout << "Making Y = X" << endl;
-	Y = X;
-	cout << Y << endl;
-	cout << (X == Y) << endl;
-
-	cout << "Making Y > X" << endl;
-	// Y = X;
-	cout << (Y > X) << endl;
-	// cout << (X == Y) << endl;
-
-	cout << "Making Y + X" << endl;
-	cout << Y + X << endl;
-
-	cout << "Making Y - X" << endl;
-	cout << Y - X << endl;
-
-	cout << "HELLO ";(Y - X).print();
-	test("Subtraction", zero == zero);
+	// test("Subtraction", A == A);
 
 	return 0;
 }
@@ -148,3 +108,26 @@ int main()
 
 // 3141592653589793238462643383279502884197169399375105820974944592
 // 2718281828459045235360287471352662497757247093699959574966967627
+
+
+
+
+	// u64 a = atoll(argv[1]), b = atoll(argv[2]);
+
+	// splitInt(123456789, 5, a, b);
+	// cout << a << ' ' << b << endl;
+
+	// cout << a << 'x' << b << " = " << karatsuba(a,b) << endl;
+
+		// cout << ((string) "Hello world").size() << endl;
+		// cout << numeric_limits<unsigned long long>::digits << endl;
+		// cout << numeric_limits<unsigned long long>::digits * log10(2) << endl;
+		// cout << "ceil(19/7) = "<< 19/7 << " + " << (19%7 != 0) << endl;
+		// cout << "ceil(18/2) = "<< 18/2 << " + " << (18%2 != 0) << endl;
+		// string a = "Hello_World"; int i = 3;
+		// while (a.size() > 0)
+		// {
+		// 	cout << a.size() << ' ' << a.substr(a.size() - i, a.size()) << endl;
+		// 	a.erase(a.size() - i, a.size());
+		// 	if ( i >= a.size() ){ i = a.size(); }
+		// }

@@ -4,6 +4,7 @@
 #include <limits>
 #include <iomanip>
 #include <type_traits>
+#include <sstream>
 
 #pragma once
 
@@ -45,11 +46,11 @@ class OmegaInt
 	// Construction and Deletion
 		// Empty
 	OmegaInt();
+
 		// From a number represented in a string
-	// OmegaInt(string num);
-		// From a primitive number
-	template <typename T>
-	OmegaInt(T num);
+	OmegaInt(std::string num);
+	OmegaInt(char const* num);
+
 		// Number of fields and sing setted all to zero
 	OmegaInt(u64 fields, bool pos);
 		// Number of fields and sing setted all to a value
@@ -93,6 +94,36 @@ class OmegaInt
 	OmegaInt operator / (OmegaInt const & other) const;
 
 	// Output Methods
+		// Prints the number as a string
+	std::string toString() const;
+	void debugPrint();
 	void print();
 	friend std::ostream& operator<<(std::ostream & os, const OmegaInt & A);
+
+
+
+
+
+template < typename T>
+OmegaInt(T foo)
+	{
+		try
+		{
+			if(! std::is_arithmetic<T>::value){throw 1;}
+		}
+		catch(int e)
+		{ cout << "Incorrect constructor, for pointer types the correct constructor is OmegaInt(u64 fields, u64* nums, bool pos);";  }
+		isPOSITIVE = foo >= 0;
+		u64 num = std::abs(foo);
+		TOTALFIELDS = num != 0? floor( (log10(num) )/ MAXDIGITS ) + 1 : 1;
+
+		NUMBERS = (u64*) calloc( TOTALFIELDS, sizeof(u64) );
+
+		for (unsigned i = 0; i < TOTALFIELDS; ++i)
+		{
+			NUMBERS[i] = num % MAXFIELDVALUE;
+			num = (num - (num % MAXFIELDVALUE)) / MAXFIELDVALUE;
+		}
+	};
+
 };

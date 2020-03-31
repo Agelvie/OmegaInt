@@ -15,26 +15,47 @@ OmegaInt::OmegaInt()
 	isPOSITIVE = true;
 };
 
-template<>
+// template<typename T>
+// OmegaInt::OmegaInt(T foo)
+// {
+// 	isPOSITIVE = foo >= 0;
+// 	u64 num = std::abs(foo);
+// 	TOTALFIELDS = num / MAXFIELDVALUE;
+
+// 	NUMBERS = (u64*) calloc( TOTALFIELDS, sizeof(u64) );
+
+// 	for (unsigned i = 0; i < TOTALFIELDS; ++i)
+// 	{
+// 		NUMBERS[i] = num % MAXFIELDVALUE;
+// 		cout << num % MAXFIELDVALUE << endl;
+// 		num = (num - (num % MAXFIELDVALUE)) / MAXFIELDVALUE;
+// 	}
+// };
+
 	// From a number represented in a string
 OmegaInt::OmegaInt(std::string num)
 {
 	unsigned i = 0, j;
-	// cout << MAXDIGITS << endl;
+	while (num.find(' ') == 0){ num = num.substr(1,num.size()); }
+
+	// check for a negative sing
+	if (num.find('-') != string::npos)
+	{
+		isPOSITIVE = false;
+		num = num.substr(1,num.size());
+	}
 
 	// calculate the number of fields required to hold that number
 	TOTALFIELDS = num.size() / MAXDIGITS;
-	if (num.size() % MAXDIGITS != 0){ TOTALFIELDS++; }
 	// the divition was not exact and there is the need for another field
-	// cout << TOTALFIELDS << endl;
+	if (num.size() % MAXDIGITS != 0){ TOTALFIELDS++; }
 
-	// NUMBERS = new u64[TOTALFIELDS] ;
+	// NUMBERS = new u64[TOTALFIELDS];
 	NUMBERS = (u64*) calloc( TOTALFIELDS, sizeof(u64) );
 
-	// check for a negative sing
-	isPOSITIVE = num.find('-') == string::npos;
 
 	j = MAXDIGITS;
+	// to prevent accessing memory that isn't there
 	if ( j >= num.size() ){ j = num.size(); }
 	// little endian
 	while(num.size() > 0)
@@ -44,32 +65,9 @@ OmegaInt::OmegaInt(std::string num)
 		if ( j >= num.size() ){ j = num.size(); }
 		i++;
 	}
-	// cout << "DONE" << endl;
 };
-template<>
-OmegaInt::OmegaInt(char const* num) { *this = OmegaInt((std::string)num); }
 
-template<>
-OmegaInt::OmegaInt(long long foo)
-{
-	cout << "LONG constructor" << endl;
-	isPOSITIVE = foo >= 0;
-cout << MAXFIELDVALUE << ' ' << ' ' << foo;_
-	// num = std::abs(num);
-	u64 num = std::abs(foo);
-	TOTALFIELDS = num / MAXFIELDVALUE;
-cout << TOTALFIELDS << ' ' << num  << ' ' << foo;_
-	NUMBERS = (u64*) calloc( TOTALFIELDS, sizeof(u64) );
-
-	for (unsigned i = 0; i < TOTALFIELDS; ++i)
-	{
-		NUMBERS[i] = num % MAXFIELDVALUE;
-		cout << num % MAXFIELDVALUE << endl;
-		num = (num - (num % MAXFIELDVALUE)) / MAXFIELDVALUE;
-	}
-};
-template<>
-OmegaInt::OmegaInt(int foo){ *this = OmegaInt((long long)foo); };
+OmegaInt::OmegaInt(char const* num) { *this = OmegaInt((std::string)num);}
 
 	// Number of fields and sing setted all to zero
 OmegaInt::OmegaInt(u64 fields, bool pos)
@@ -117,7 +115,7 @@ OmegaInt const & OmegaInt::operator= (OmegaInt const & other)
 
 void OmegaInt::_copy(OmegaInt const & other)
 {
-	if (NUMBERS != nullptr){ delete[] NUMBERS; }
+	if (NUMBERS != NULL){ delete[] NUMBERS; }
 
 	TOTALFIELDS = other.fields();
 	isPOSITIVE = other.sing();
@@ -324,28 +322,42 @@ OmegaInt OmegaInt::operator / (OmegaInt const & other) const
 
 };
 
+// Prints the number as a string
+std::string OmegaInt::toString() const
+{
+	std::ostringstream ss;
+
+	if ( !this->isPOSITIVE ){ ss << '-';}
+	for (unsigned i = 0; i < TOTALFIELDS; ++i)
+	{
+		if (i == 0)
+		{ ss << NUMBERS[TOTALFIELDS - i - 1]; }
+		else
+		{ ss << std::setfill('0') << std::setw(MAXDIGITS) << NUMBERS[TOTALFIELDS - i - 1]; }
+	}
+
+	return ss.str();
+}
+
 // Output Methods
-void OmegaInt::print()
+void OmegaInt::debugPrint()
 {
 	for (unsigned i = 0; i < TOTALFIELDS; ++i)
 	{
-		cout << NUMBERS[i] << endl;
+		cout << std::setfill('0') << std::setw(MAXDIGITS) << NUMBERS[i] << endl;
 	}
-	// for (unsigned i = 0; i < TOTALFIELDS; ++i)
-	// {
-	// 	cout << NUMBERS[TOTALFIELDS - i - 1];
-	// }
+
 	cout << endl;
 }
-   
+
+void OmegaInt::print()
+{
+	cout << this->toString() << endl;
+}
 
 std::ostream& operator<<(std::ostream & os, const OmegaInt & A)
 {
-	if ( !A.isPOSITIVE ){ os << '-';}
-	for (unsigned i = 0; i < A.fields(); ++i)
-	{
-		os << A[A.fields() - i - 1];
-	}
-	
+	os << A.toString();
 	return os;
 }
+
