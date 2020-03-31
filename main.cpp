@@ -3,7 +3,7 @@
 #include <limits>
 #include "24Karat.hpp"
 
-#define _ cin.get();
+// #define _ cin.get();
 typedef unsigned long long u64;
 using std::cout;
 using std::endl;
@@ -56,7 +56,17 @@ u64 karatsuba (u64 num1, u64 num2)
 	return ( z2 * (u64)exp( mHalf * 2 * log(10) ) ) + ( (z1 - z2 - z0) * (u64)exp( mHalf * log(10) ) ) + z0;
 }
 
-int main(int argc, char const *argv[])
+void test(std::string message, bool pass)
+{
+	static unsigned i = 0;
+	cout << "TEST " << i++ << ":\t" << message << endl;
+	cout << (pass? "PASS" : "FAIL") << endl;
+};
+
+// int main(int argc, char const *argv[])
+void test();
+
+int main()
 {
 	// u64 a = atoll(argv[1]), b = atoll(argv[2]);
 
@@ -78,8 +88,40 @@ int main(int argc, char const *argv[])
 		// 	if ( i >= a.size() ){ i = a.size(); }
 		// }
 
-	OmegaInt X("12345678901234567890");
+	// OmegaInt X("12345678901234567890");
+	OmegaInt X("1234");
+	cout << "X = " << X << endl;
 	X.print();
+
+	OmegaInt Y("456");
+	cout << "Y = "<< Y << endl;
+	Y.print();
+
+	OmegaInt Z("-986");
+	cout << "Z = " << Z << endl;
+	Z.print();
+
+	// TEMPORAL: while templating operations with primitive types
+	OmegaInt zero(100000);
+
+	cout << "Making Y = X" << endl;
+	Y = X;
+	cout << Y << endl;
+	cout << (X == Y) << endl;
+
+	cout << "Making Y > X" << endl;
+	// Y = X;
+	cout << (Y > X) << endl;
+	// cout << (X == Y) << endl;
+
+	cout << "Making Y + X" << endl;
+	cout << Y + X << endl;
+
+	cout << "Making Y - X" << endl;
+	cout << Y - X << endl;
+
+	cout << "HELLO ";(Y - X).print();
+	test("Subtraction", zero == zero);
 
 	return 0;
 }

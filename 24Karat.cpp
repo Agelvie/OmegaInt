@@ -2,6 +2,8 @@
 	//@TODO -- check that every field is less than or equal to MAXFIELDVALUE
 	//@TODO -- if top fields are only zeros -> erase
 	//@TODO -- allocate new memory if final field is aproaching it's limit
+	//@TODO -- template for interaction with primitives
+	//@TODO -- template for assingment from string
 	//@TODO -- implement *
 	//@TODO -- implement /
 
@@ -13,6 +15,7 @@ OmegaInt::OmegaInt()
 	isPOSITIVE = true;
 };
 
+template<>
 	// From a number represented in a string
 OmegaInt::OmegaInt(std::string num)
 {
@@ -43,6 +46,30 @@ OmegaInt::OmegaInt(std::string num)
 	}
 	// cout << "DONE" << endl;
 };
+template<>
+OmegaInt::OmegaInt(char const* num) { *this = OmegaInt((std::string)num); }
+
+template<>
+OmegaInt::OmegaInt(long long foo)
+{
+	cout << "LONG constructor" << endl;
+	isPOSITIVE = foo >= 0;
+cout << MAXFIELDVALUE << ' ' << ' ' << foo;_
+	// num = std::abs(num);
+	u64 num = std::abs(foo);
+	TOTALFIELDS = num / MAXFIELDVALUE;
+cout << TOTALFIELDS << ' ' << num  << ' ' << foo;_
+	NUMBERS = (u64*) calloc( TOTALFIELDS, sizeof(u64) );
+
+	for (unsigned i = 0; i < TOTALFIELDS; ++i)
+	{
+		NUMBERS[i] = num % MAXFIELDVALUE;
+		cout << num % MAXFIELDVALUE << endl;
+		num = (num - (num % MAXFIELDVALUE)) / MAXFIELDVALUE;
+	}
+};
+template<>
+OmegaInt::OmegaInt(int foo){ *this = OmegaInt((long long)foo); };
 
 	// Number of fields and sing setted all to zero
 OmegaInt::OmegaInt(u64 fields, bool pos)
@@ -90,7 +117,7 @@ OmegaInt const & OmegaInt::operator= (OmegaInt const & other)
 
 void OmegaInt::_copy(OmegaInt const & other)
 {
-	delete[] NUMBERS;
+	if (NUMBERS != nullptr){ delete[] NUMBERS; }
 
 	TOTALFIELDS = other.fields();
 	isPOSITIVE = other.sing();
@@ -110,7 +137,7 @@ bool OmegaInt::sing() const { return isPOSITIVE; }
 	// Absolute value, returns the whole object
 OmegaInt OmegaInt::abs() const
 {
-	OmegaInt A = *this;
+	OmegaInt A(*this);
 	if ( ! A.isPOSITIVE ){ A.changeSing(); }
 	return A;
 };
@@ -161,7 +188,7 @@ bool OmegaInt::operator >  (const OmegaInt &other) const
 	const OmegaInt& B = other;
 	bool equalLength = A.fields() == B.fields();	// Different lenghts does NOT nesesarily mean
 	bool isAlonger = A.fields() > B.fields();		// that they are different numbers
-	unsigned min = isAlonger? B.fields(): A.fields();	// Pick the shortest one
+	unsigned min = isAlonger? B.fields() : A.fields();	// Pick the shortest one
 	bool hasAgreaterABS;
 
 	// A is possitive an B negative
@@ -179,7 +206,7 @@ bool OmegaInt::operator >  (const OmegaInt &other) const
 	}
 	else
 	{
-		unsigned i = min == 0? min : min - 1;
+		int i = min == 0? min : min - 1;
 		bool done = false;
 		while (!done and i >= 0)
 		{
@@ -229,8 +256,8 @@ OmegaInt OmegaInt::_subtract(OmegaInt const & other) const
 	bool carry = false;
 	// returns OmegaInt's with APPROPRIATE given the operands
 	/* For simplicity alising ( this - other ) = ( A - B ) = RESULT */
-	const OmegaInt A = *this;
-	const OmegaInt& B = other;
+	OmegaInt A = *this;
+	OmegaInt B = other;
 
 	unsigned min = A.fields() > B.fields()? B.fields() : A.fields();
 	unsigned Max = A.fields() > B.fields()? A.fields() : B.fields();
@@ -239,20 +266,16 @@ OmegaInt OmegaInt::_subtract(OmegaInt const & other) const
 
 	if (B.abs() > A.abs())
 	{
-		const OmegaInt C = B;
-		const OmegaInt B = A;
-		const OmegaInt A = C;
+		OmegaInt C(A);
+		A = B;
+		B = C;
 		RESULT.changeSing();
 	}
-	
-// MAXFIELDVALUE
+
 	u64 temp;
 
 	for (unsigned i = 0; i < min; ++i)
 	{
-		// if ( A[i] >= B[i] ) { temp = A[i] - B[i] - (carry? 1 : 0); carry = false; }
-		// else { temp = MAXFIELDVALUE + A[i] - B[i] - (carry? 1 : 0); carry = true; }
-
 		temp = (A[i] < B[i]? MAXFIELDVALUE : 0) + A[i] - B[i] - (carry? 1 : 0);
 		carry = A[i] < B[i];
 
@@ -308,26 +331,20 @@ void OmegaInt::print()
 	{
 		cout << NUMBERS[i] << endl;
 	}
-	for (unsigned i = 0; i < TOTALFIELDS; ++i)
-	{
-		cout << NUMBERS[TOTALFIELDS - i - 1];
-	}
-	cout << endl;
-
-	for (unsigned i = TOTALFIELDS - 1; i >= 0; --i)
-	{
-		cout << NUMBERS[i];
-	}
+	// for (unsigned i = 0; i < TOTALFIELDS; ++i)
+	// {
+	// 	cout << NUMBERS[TOTALFIELDS - i - 1];
+	// }
 	cout << endl;
 }
    
 
-std::ostream& OmegaInt::operator<<(std::ostream & os)
+std::ostream& operator<<(std::ostream & os, const OmegaInt & A)
 {
-	os << (isPOSITIVE? NULL : '-');
-	for (unsigned i = TOTALFIELDS - 1; i >= 0; --i)
+	if ( !A.isPOSITIVE ){ os << '-';}
+	for (unsigned i = 0; i < A.fields(); ++i)
 	{
-		os << NUMBERS[i];
+		os << A[A.fields() - i - 1];
 	}
 	
 	return os;
