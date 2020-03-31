@@ -103,9 +103,9 @@ class OmegaInt
 
 
 
-
-template < typename T>
-OmegaInt(T foo)
+	// Templated Methods
+	template < typename T>
+	OmegaInt(T foo)
 	{
 		try
 		{
@@ -118,12 +118,46 @@ OmegaInt(T foo)
 		TOTALFIELDS = num != 0? floor( (log10(num) )/ MAXDIGITS ) + 1 : 1;
 
 		NUMBERS = (u64*) calloc( TOTALFIELDS, sizeof(u64) );
-
 		for (unsigned i = 0; i < TOTALFIELDS; ++i)
 		{
 			NUMBERS[i] = num % MAXFIELDVALUE;
 			num = (num - (num % MAXFIELDVALUE)) / MAXFIELDVALUE;
 		}
 	};
+
+	template < typename T>
+	OmegaInt const & operator = (T num)
+	{
+		cout << "template\n";
+		if (!std::is_integral<T>::value and !std::is_floating_point<T>::value)
+			{ return * new OmegaInt(); }
+
+		_copy(OmegaInt(num));
+		return *this;
+	};
+
+	OmegaInt const & operator = (std::string num)
+		{ _copy(OmegaInt(num)); return *this; };
+
+	OmegaInt const & operator =(char const* num)
+		{ _copy(OmegaInt(num)); return *this; };
+	
+	template < typename T >
+	bool operator == (T const num) const { return *this == (OmegaInt(num)); };
+	
+	template < typename T >
+	bool operator >  (T num) const { return *this > (OmegaInt(num)); }
+
+	template < typename T >
+	OmegaInt operator + (T num) const { return *this + (OmegaInt(num)); }
+	
+	template < typename T >
+	OmegaInt operator - (T num) const { return *this - (OmegaInt(num)); }
+
+	template < typename T >
+	OmegaInt operator * (T num) const { return *this * (OmegaInt(num)); }
+
+	template < typename T >
+	OmegaInt operator / (T num) const { return *this / (OmegaInt(num)); }
 
 };

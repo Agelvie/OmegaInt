@@ -37,7 +37,8 @@ OmegaInt::OmegaInt(std::string num)
 {
 	unsigned i = 0, j;
 	while (num.find(' ') == 0){ num = num.substr(1,num.size()); }
-
+	
+	isPOSITIVE = true;
 	// check for a negative sing
 	if (num.find('-') != string::npos)
 	{
@@ -107,10 +108,10 @@ OmegaInt::OmegaInt(OmegaInt const & other)
 OmegaInt::~OmegaInt(){ free(NUMBERS); NUMBERS = NULL; };
 
 	// Assingment Operator
-OmegaInt const & OmegaInt::operator= (OmegaInt const & other)
+OmegaInt const & OmegaInt::operator = (OmegaInt const & other)
 {
 	if (this != &other) { _copy(other); }
-    return *this;
+	return *this;
 };
 
 void OmegaInt::_copy(OmegaInt const & other)
@@ -301,6 +302,7 @@ OmegaInt OmegaInt::operator + (OmegaInt const & other) const
 
 	return RESULT;
 };
+
 OmegaInt OmegaInt::operator - (OmegaInt const & other) const
 {
 	OmegaInt RESULT;
@@ -318,8 +320,8 @@ OmegaInt OmegaInt::operator * (OmegaInt const & other) const
 };
 OmegaInt OmegaInt::operator / (OmegaInt const & other) const
 {
-	return other;
 
+	return other;
 };
 
 // Prints the number as a string

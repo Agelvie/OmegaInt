@@ -56,10 +56,17 @@ u64 karatsuba (u64 num1, u64 num2)
 	return ( z2 * (u64)exp( mHalf * 2 * log(10) ) ) + ( (z1 - z2 - z0) * (u64)exp( mHalf * log(10) ) ) + z0;
 }
 
+void testC(std::string message, bool pass)
+{
+	static unsigned i = 0;
+	cout << "TEST " << i++ << ":\t" << message << '\t';
+	cout << (pass? "\033[1;32mPASS\033[0m" : "\033[1;31mFAIL\033[0m") << endl;
+}
+
 void test(std::string message, bool pass)
 {
 	static unsigned i = 0;
-	cout << "TEST " << i++ << ":\t" << message << endl;
+	cout << "TEST " << i++ << ":\t" << message << '\t';
 	cout << (pass? "PASS" : "FAIL") << endl;
 };
 
@@ -81,7 +88,19 @@ int main()
 	OmegaInt A(0);
 	cout << "A = " << A << endl;
 
-	// test("Subtraction", A == A);
+	A = 1;
+	cout << "A = " << A << endl;
+	testC("Int Assignation '='", A == 1);
+
+	A = "2";
+	cout << "A = " << A << endl;
+	testC("String Assignation '='", A == 2);
+
+	testC("Equal Int'=='", A == 2);
+
+	testC("Equal String'=='", A == "2");
+
+	testC("Subtraction '-'", (OmegaInt(27) - OmegaInt(7)) == 20 );
 
 	return 0;
 }
