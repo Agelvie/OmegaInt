@@ -92,15 +92,20 @@ int main()
 	cout << "A = " << A << endl;
 	testC("Int Assignation '='", A == 1);
 
-	A = "2";
+	A = "0002";
 	cout << "A = " << A << endl;
-	testC("String Assignation '='", A == 2);
+	testC("String Assignation (with removal of leading zeros) '='", A == 2);
 
 	testC("Equal Int'=='", A == 2);
 
 	testC("Equal String'=='", A == "2");
 
 	testC("Subtraction '-'", (OmegaInt(27) - OmegaInt(7)) == 20 );
+
+	A = X + Y;
+	testC("Addition '+'", A == (X + Y) );
+
+	testC("Subtraction '-' and Maintenance", (OmegaInt(101) - OmegaInt(98)) == 3 );
 
 	return 0;
 }

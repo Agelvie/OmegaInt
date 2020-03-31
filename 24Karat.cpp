@@ -1,9 +1,12 @@
 #include "24Karat.hpp"
+void bug()
+{
+	static unsigned i = 0;
+	cout << i++;_
+}
 	//@TODO -- check that every field is less than or equal to MAXFIELDVALUE
 	//@TODO -- if top fields are only zeros -> erase
 	//@TODO -- allocate new memory if final field is aproaching it's limit
-	//@TODO -- template for interaction with primitives
-	//@TODO -- template for assingment from string
 	//@TODO -- implement *
 	//@TODO -- implement /
 
@@ -15,28 +18,13 @@ OmegaInt::OmegaInt()
 	isPOSITIVE = true;
 };
 
-// template<typename T>
-// OmegaInt::OmegaInt(T foo)
-// {
-// 	isPOSITIVE = foo >= 0;
-// 	u64 num = std::abs(foo);
-// 	TOTALFIELDS = num / MAXFIELDVALUE;
-
-// 	NUMBERS = (u64*) calloc( TOTALFIELDS, sizeof(u64) );
-
-// 	for (unsigned i = 0; i < TOTALFIELDS; ++i)
-// 	{
-// 		NUMBERS[i] = num % MAXFIELDVALUE;
-// 		cout << num % MAXFIELDVALUE << endl;
-// 		num = (num - (num % MAXFIELDVALUE)) / MAXFIELDVALUE;
-// 	}
-// };
-
 	// From a number represented in a string
 OmegaInt::OmegaInt(std::string num)
 {
 	unsigned i = 0, j;
+	// clean the num string
 	while (num.find(' ') == 0){ num = num.substr(1,num.size()); }
+	while (num.find('0') == 0){ num = num.substr(1,num.size()); }
 	
 	isPOSITIVE = true;
 	// check for a negative sing
@@ -300,6 +288,7 @@ OmegaInt OmegaInt::operator + (OmegaInt const & other) const
 	else if (  this->sing() and !other.sing() )  { RESULT = *this - other; }
 	else /* ( !this->sing() and !other.sing() )*/{ RESULT = this->_add(other); RESULT.changeSing(); }
 
+	RESULT._maintenance();
 	return RESULT;
 };
 
@@ -312,6 +301,7 @@ OmegaInt OmegaInt::operator - (OmegaInt const & other) const
 	else if (  this->sing() and !other.sing() )  { RESULT = this->_add(other); }
 	else /* ( !this->sing() and !other.sing() )*/{ RESULT = other._subtract(*this); }
 
+	RESULT._maintenance();
 	return RESULT;
 };
 OmegaInt OmegaInt::operator * (OmegaInt const & other) const
@@ -363,3 +353,51 @@ std::ostream& operator<<(std::ostream & os, const OmegaInt & A)
 	return os;
 }
 
+ void OmegaInt::_reSize(u64 newSize, u64* NUMBERS)
+{
+	// Make new Container
+	u64* temp = (u64*) realloc( NUMBERS, sizeof(u64) * newSize );
+	if (temp != NULL) { NUMBERS = temp; }
+	else{ free (NUMBERS); puts ("Error (re)allocating memory"); exit (1); }
+};
+
+void OmegaInt::_maintenance()
+{
+	// Verify that everything is under MAXFIELDVALUE
+	for (unsigned i = 0; i < TOTALFIELDS; ++i)
+	{
+		if ( NUMBERS[i] > MAXFIELDVALUE )
+		{
+			if( i + 1 < TOTALFIELDS )
+			{
+				NUMBERS[i+1]++;
+			}
+			else
+			{
+				_reSize( TOTALFIELDS+1, NUMBERS );
+				// Add the carry
+				NUMBERS[TOTALFIELDS]++;
+				// Increase size of container
+				TOTALFIELDS++;
+			}
+		}
+	}
+
+	// Verify that there are no leading zero fields
+	bool isZero = NUMBERS[TOTALFIELDS - 1] == 0;
+	unsigned i = 0, fieldsErasable = 0;
+	while ( i < TOTALFIELDS and isZero )
+	{
+		isZero = NUMBERS[TOTALFIELDS - i - 1] == 0;
+		fieldsErasable += isZero? 1 : 0;
+		++i;
+	}
+
+	if (fieldsErasable > 0)
+	{
+		// Change the size of the container
+		TOTALFIELDS -= fieldsErasable;
+		// Resize to fit
+		_reSize( TOTALFIELDS, NUMBERS );
+	}
+};

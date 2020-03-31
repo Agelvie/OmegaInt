@@ -41,6 +41,10 @@ class OmegaInt
 	OmegaInt _add(OmegaInt const & other) const;
 		// Subtraction function
 	OmegaInt _subtract(OmegaInt const & other) const;
+	
+	// Maintenance routine
+	void _maintenance();
+	void _reSize(u64 newSize, u64* NUMBERS);
 
 	public:
 	// Construction and Deletion
