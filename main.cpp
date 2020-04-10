@@ -111,6 +111,33 @@ int main()
 	A = (OmegaInt(9999) + OmegaInt(1));
 	testC("Maintenance", A == 10000 and A.fields() == 3);
 
+	A = 3; A += OmegaInt(1);
+	testC("Operator +=", A == 4);
+
+	A = 3; A -= 1;
+	testC("Operator -=", A == 2);
+
+	A = X > Y? X: Y;
+	testC("Test ternary operator '?'", A == X);
+
+	testC("Test add zero", (A + 0) == A);
+	testC("Test substract zero", (A - 0) == A);
+
+	// cout << "(X - X)\n";
+	// (X - X).debugPrint();
+	// cout << "OmegaInt(0)\n";
+	// (OmegaInt(0)).debugPrint();
+
+	testC("Test X - X", (X - X) == 0);
+	A = 1; testC("Test 1 - 1", (A - 1) == 0);
+	A = 0; testC("Test 0 - 1", (A - 1) == -1);
+	A = 2; testC("Test 2 - 3", (A - 3) == -1);
+
+	while(A > 0){ A -= 1; }
+	testC("Test while(A > 0)", A == 0);
+
+	testC("Multiplication", OmegaInt(2) * OmegaInt(2) == 4);
+
 	return 0;
 }
 

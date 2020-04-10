@@ -241,7 +241,7 @@ OmegaInt OmegaInt::_add(OmegaInt const & other) const
 OmegaInt OmegaInt::_subtract(OmegaInt const & other) const
 {
 	bool carry = false;
-	// returns OmegaInt's with APPROPRIATE given the operands
+	// returns OmegaInt's with APPROPRIATE sing given the operands
 	/* For simplicity alising ( this - other ) = ( A - B ) = RESULT */
 	OmegaInt A = *this;
 	OmegaInt B = other;
@@ -304,15 +304,39 @@ OmegaInt OmegaInt::operator - (OmegaInt const & other) const
 	RESULT._maintenance();
 	return RESULT;
 };
+
 OmegaInt OmegaInt::operator * (OmegaInt const & other) const
 {
-	return other;
+	OmegaInt A = *this;
+	OmegaInt B = other;
+	// OmegaInt RESULT( A.fields() + B.fields(), true );
+	OmegaInt RESULT = *(new OmegaInt(0));
+	// int i = 0; int* j= new int; cout << &A << '\n' << &B << '\n' << &RESULT << '\n' << &i << '\n' << &j << endl;
+
+	// NAIVE IMPLEMENTATION
+	while(B > 0)
+	{
+		RESULT += A;
+		B -= 1;
+	}
+
+	return RESULT;
 };
 OmegaInt OmegaInt::operator / (OmegaInt const & other) const
 {
 
 	return other;
 };
+
+void OmegaInt::operator += (OmegaInt const & other)
+{
+	*this = *this + other;
+}
+
+void OmegaInt::operator -= (OmegaInt const & other)
+{
+	*this = *this - other;
+}
 
 // Prints the number as a string
 std::string OmegaInt::toString() const
@@ -338,7 +362,7 @@ void OmegaInt::debugPrint()
 	{
 		cout << std::setfill('0') << std::setw(MAXDIGITS) << NUMBERS[i] << endl;
 	}
-
+	cout << std::boolalpha << "isPOSITIVE: " << isPOSITIVE << endl;
 	cout << endl;
 }
 
@@ -355,6 +379,7 @@ std::ostream& operator<<(std::ostream & os, const OmegaInt & A)
 
  void OmegaInt::_reSize(u64 newSize, u64* NUMBERS)
 {
+	if (newSize <= 0){ return; }
 	// Make new Container
 	u64* temp = (u64*) realloc( NUMBERS, sizeof(u64) * newSize );
 	if (temp != NULL) { NUMBERS = temp; }
@@ -395,6 +420,8 @@ void OmegaInt::_maintenance()
 		++i;
 	}
 
+	if (fieldsErasable == TOTALFIELDS){ fieldsErasable--; }
+
 	if (fieldsErasable > 0)
 	{
 		// Change the size of the container
@@ -402,4 +429,7 @@ void OmegaInt::_maintenance()
 		// Resize to fit
 		_reSize( TOTALFIELDS, NUMBERS );
 	}
+
+	// Ensure that the zero is represented has positive
+	if (TOTALFIELDS == 1 and NUMBERS[0] == 0){ isPOSITIVE = true; }
 };

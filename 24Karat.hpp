@@ -98,6 +98,9 @@ class OmegaInt
 	OmegaInt operator - (OmegaInt const & other) const;
 	OmegaInt operator * (OmegaInt const & other) const;
 	OmegaInt operator / (OmegaInt const & other) const;
+	void operator += (OmegaInt const & other);
+	void operator -= (OmegaInt const & other);
+
 
 	// Output Methods
 		// Prints the number as a string
@@ -162,4 +165,9 @@ class OmegaInt
 	template < typename T >
 	OmegaInt operator / (T num) const { return *this / (OmegaInt(num)); }
 
+	template < typename T >
+	void operator += (T num) { *this += (OmegaInt(num)); }
+
+	template < typename T >
+	void operator -= (T num) { *this -= (OmegaInt(num)); }
 };
