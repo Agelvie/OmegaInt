@@ -14,6 +14,8 @@ typedef unsigned long long u64;
 
 // Maximum number of digits a field can have. (System depedent)
 // const unsigned MAXDIGITS = floor(std::numeric_limits<u64>::digits * log10(2) / 2);
+// const unsigned MAXDIGITS = pow(10, floor(log10(std::numeric_limits<u64>::digits)));
+// const unsigned ALLOWED = log10(MAXDIGITS) % 2 == 0? sqrt(MAXDIGITS) : sqrt(MAXDIGITS -1);
 const unsigned MAXDIGITS = 2; // for testing purposes
 
 // Maximum value that a field can have. (System depedent), values are strictly less than
@@ -104,9 +106,6 @@ class OmegaInt
 	void print();
 	friend std::ostream& operator<<(std::ostream & os, const OmegaInt & A);
 
-
-
-
 	// Templated Methods
 	template < typename T>
 	OmegaInt(T foo)
@@ -116,7 +115,7 @@ class OmegaInt
 			if(! std::is_arithmetic<T>::value){throw 1;}
 		}
 		catch(int e)
-		{ cout << "Incorrect constructor, for pointer types the correct constructor is OmegaInt(u64 fields, u64* nums, bool pos);";  }
+		{ cout << "Incorrect constructor, for pointer types the correct constructor is OmegaInt(u64 fields, u64* nums, bool pos);"; }
 		isPOSITIVE = foo >= 0;
 		u64 num = std::abs(foo);
 		TOTALFIELDS = num != 0? floor( (log10(num) )/ MAXDIGITS ) + 1 : 1;
@@ -132,7 +131,6 @@ class OmegaInt
 	template < typename T>
 	OmegaInt const & operator = (T num)
 	{
-		cout << "template\n";
 		if (!std::is_integral<T>::value and !std::is_floating_point<T>::value)
 			{ return * new OmegaInt(); }
 

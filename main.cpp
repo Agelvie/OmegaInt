@@ -105,7 +105,11 @@ int main()
 	A = X + Y;
 	testC("Addition '+'", A == (X + Y) );
 
-	testC("Subtraction '-' and Maintenance", (OmegaInt(101) - OmegaInt(98)) == 3 );
+	A = (OmegaInt(101) - OmegaInt(98));
+	testC("Subtraction '-' and Maintenance", A == 3 and A.fields() == 1 );
+
+	A = (OmegaInt(9999) + OmegaInt(1));
+	testC("Maintenance", A == 10000 and A.fields() == 3);
 
 	return 0;
 }

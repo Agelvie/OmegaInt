@@ -366,8 +366,10 @@ void OmegaInt::_maintenance()
 	// Verify that everything is under MAXFIELDVALUE
 	for (unsigned i = 0; i < TOTALFIELDS; ++i)
 	{
-		if ( NUMBERS[i] > MAXFIELDVALUE )
+		if ( NUMBERS[i] >= MAXFIELDVALUE )
 		{
+			NUMBERS[i] = 0;
+			
 			if( i + 1 < TOTALFIELDS )
 			{
 				NUMBERS[i+1]++;
