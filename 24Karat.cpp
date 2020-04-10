@@ -313,12 +313,14 @@ OmegaInt OmegaInt::operator * (OmegaInt const & other) const
 	OmegaInt RESULT = *(new OmegaInt(0));
 	// int i = 0; int* j= new int; cout << &A << '\n' << &B << '\n' << &RESULT << '\n' << &i << '\n' << &j << endl;
 
-	// NAIVE IMPLEMENTATION
+	/*// NAIVE IMPLEMENTATION
 	while(B > 0)
 	{
 		RESULT += A;
 		B -= 1;
-	}
+	}*/
+
+	
 
 	return RESULT;
 };

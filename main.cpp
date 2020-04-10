@@ -136,7 +136,10 @@ int main()
 	while(A > 0){ A -= 1; }
 	testC("Test while(A > 0)", A == 0);
 
-	testC("Multiplication", OmegaInt(2) * OmegaInt(2) == 4);
+	testC("1 Digit Multiplication", OmegaInt(2) * OmegaInt(2) == 4);
+
+	testC("16 Digit Multiplication", OmegaInt("1092384710293847") * OmegaInt("1092384710293847") 
+																== "1193304355283772039845086059409");
 
 	return 0;
 }
