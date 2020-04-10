@@ -320,7 +320,6 @@ OmegaInt OmegaInt::operator * (OmegaInt const & other) const
 		B -= 1;
 	}*/
 
-	
 
 	return RESULT;
 };

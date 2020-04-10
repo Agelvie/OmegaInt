@@ -146,7 +146,7 @@ class OmegaInt
 
 	OmegaInt const & operator =(char const* num)
 		{ _copy(OmegaInt(num)); return *this; };
-	// lsdkfj
+
 	template < typename T >
 	bool operator == (T const num) const { return *this == (OmegaInt(num)); };
 	

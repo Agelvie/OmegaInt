@@ -137,6 +137,8 @@ int main()
 	testC("Test while(A > 0)", A == 0);
 
 	testC("1 Digit Multiplication", OmegaInt(2) * OmegaInt(2) == 4);
+	
+	testC("5 Digit Multiplication", OmegaInt(12345) * OmegaInt(67890) == 838102050);
 
 	testC("16 Digit Multiplication", OmegaInt("1092384710293847") * OmegaInt("1092384710293847") 
 																== "1193304355283772039845086059409");
