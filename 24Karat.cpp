@@ -4,10 +4,10 @@ void bug()
 	static unsigned i = 0;
 	cout << i++;_
 }
-	//@TODO -- check that every field is less than or equal to MAXFIELDVALUE
-	//@TODO -- if top fields are only zeros -> erase
-	//@TODO -- allocate new memory if final field is aproaching it's limit
 	//@TODO -- implement *
+	// 				-- implement splitFrom() overload for OmegaInt and u64
+	// 				-- implement splitTo() overload for OmegaInt and u64
+	//				-- implement _karatsuba
 	//@TODO -- implement /
 
 	// Empty
@@ -305,6 +305,30 @@ OmegaInt OmegaInt::operator - (OmegaInt const & other) const
 	return RESULT;
 };
 
+// OmegaInt OmegaInt::_karatsuba(OmegaInt const & A, OmegaInt const & B)
+// {
+	// if (A < ALLOWED and B < ALLOWED)
+	// {
+	// 	return ;
+	// }
+
+	/* calculates the size of the numbers */
+	// m = min(size_base10(num1), size_base10(num2))
+	// m2 = floor(m/2) 
+	/*m2 = ceil(m/2) will also work */
+
+	/* split the digit sequences in the middle */
+	// high1, low1 = split_at(num1, m2)
+	// high2, low2 = split_at(num2, m2)
+
+	/* 3 calls made to numbers approximately half the size */
+	// z0 = karatsuba(low1, low2)
+	// z1 = karatsuba((low1 + high1), (low2 + high2))
+	// z2 = karatsuba(high1, high2)
+
+	// return (z2 * 10 ^ (m2 * 2)) + ((z1 - z2 - z0) * 10 ^ m2) + z0
+// }
+
 OmegaInt OmegaInt::operator * (OmegaInt const & other) const
 {
 	OmegaInt A = *this;
@@ -414,14 +438,14 @@ void OmegaInt::_maintenance()
 	// Verify that there are no leading zero fields
 	bool isZero = NUMBERS[TOTALFIELDS - 1] == 0;
 	unsigned i = 0, fieldsErasable = 0;
-	while ( i < TOTALFIELDS and isZero )
+	while ( i < TOTALFIELDS - 1 and isZero )
 	{
 		isZero = NUMBERS[TOTALFIELDS - i - 1] == 0;
 		fieldsErasable += isZero? 1 : 0;
 		++i;
 	}
 
-	if (fieldsErasable == TOTALFIELDS){ fieldsErasable--; }
+	// if (fieldsErasable == TOTALFIELDS){ fieldsErasable--; }
 
 	if (fieldsErasable > 0)
 	{

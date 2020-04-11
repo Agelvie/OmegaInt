@@ -15,11 +15,12 @@ typedef unsigned long long u64;
 // Maximum number of digits a field can have. (System depedent)
 // const unsigned MAXDIGITS = floor(std::numeric_limits<u64>::digits * log10(2) / 2);
 // const unsigned MAXDIGITS = pow(10, floor(log10(std::numeric_limits<u64>::digits)));
-// const unsigned ALLOWED = log10(MAXDIGITS) % 2 == 0? sqrt(MAXDIGITS) : sqrt(MAXDIGITS -1);
 const unsigned MAXDIGITS = 2; // for testing purposes
 
 // Maximum value that a field can have. (System depedent), values are strictly less than
 const u64 MAXFIELDVALUE = pow(10,MAXDIGITS);
+// Value al which it is safe to multiply two fields of an OmegaInt
+const u64 ALLOWED = log10(MAXFIELDVALUE) % 2 == 0? sqrt(MAXFIELDVALUE) : sqrt(MAXFIELDVALUE -1);
 // #define MAXFIELDVALUE (pow(10,MAXDIGITS) - 1);
 
 using std::cout;
