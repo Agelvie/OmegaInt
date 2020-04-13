@@ -102,6 +102,13 @@ OmegaInt const & OmegaInt::operator = (OmegaInt const & other)
 	return *this;
 };
 
+OmegaInt const & OmegaInt::operator = (std::string num)
+	{ _copy(OmegaInt(num)); return *this; };
+
+OmegaInt const & OmegaInt::operator =(char const* num)
+	{ _copy(OmegaInt(num)); return *this; };
+
+
 void OmegaInt::_copy(OmegaInt const & other)
 {
 	if (NUMBERS != NULL){ delete[] NUMBERS; }
@@ -121,7 +128,7 @@ unsigned OmegaInt::fields() const { return TOTALFIELDS; }
 	// Returns the sing of the OmegaInt
 bool OmegaInt::sing() const { return isPOSITIVE; }
 	
-	// Absolute value, returns the whole object
+	// Absolute value, returns a positive copy of the object
 OmegaInt OmegaInt::abs() const
 {
 	OmegaInt A(*this);
@@ -402,7 +409,7 @@ std::ostream& operator<<(std::ostream & os, const OmegaInt & A)
 	return os;
 }
 
- void OmegaInt::_reSize(u64 newSize, u64* NUMBERS)
+void OmegaInt::_reSize(u64 newSize, u64* NUMBERS)
 {
 	if (newSize <= 0){ return; }
 	// Make new Container

@@ -56,6 +56,10 @@ u64 karatsuba (u64 num1, u64 num2)
 	return ( z2 * (u64)exp( mHalf * 2 * log(10) ) ) + ( (z1 - z2 - z0) * (u64)exp( mHalf * log(10) ) ) + z0;
 }
 
+// template <typename T>
+// void displayEqual( OmegaInt &A, T value )
+// {}
+
 void testC(std::string message, bool pass)
 {
 	static unsigned i = 0;
@@ -77,23 +81,23 @@ int main()
 {
 	// OmegaInt X("12345678901234567890");
 	OmegaInt X("1234");
-	cout << "X = " << X << endl;
+	// cout << "X = " << X << endl;
 
 	OmegaInt Y("456");
-	cout << "Y = "<< Y << endl;
+	// cout << "Y = "<< Y << endl;
 
 	OmegaInt Z("-986");
-	cout << "Z = " << Z << endl;
+	// cout << "Z = " << Z << endl;
 
 	OmegaInt A(0);
-	cout << "A = " << A << endl;
+	// cout << "A = " << A << endl;
 
 	A = 1;
-	cout << "A = " << A << endl;
+	// cout << "A = " << A << endl;
 	testC("Int Assignation '='", A == 1);
 
 	A = "0002";
-	cout << "A = " << A << endl;
+	// cout << "A = " << A << endl;
 	testC("String Assignation (with removal of leading zeros) '='", A == 2);
 
 	testC("Equal Int'=='", A == 2);
@@ -122,6 +126,9 @@ int main()
 
 	testC("Test add zero", (A + 0) == A);
 	testC("Test substract zero", (A - 0) == A);
+
+	A = -1;
+	testC("Test abs", A.abs() == 1);
 
 	// cout << "(X - X)\n";
 	// (X - X).debugPrint();
