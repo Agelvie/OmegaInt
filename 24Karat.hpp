@@ -65,8 +65,6 @@ class OmegaInt
 			// Destructor
 			~OmegaInt();
 
-		// Assingment Operator
-			OmegaInt const & operator= (OmegaInt const & other);
 
 		// Getters
 			// Returns the number of fields in the OmegaInt
@@ -75,64 +73,59 @@ class OmegaInt
 			bool sing() const;
 			// Absolute value, returns a positive copy of the object
 			OmegaInt abs() const;
+			// Returns the number of digits
+			u64 digits() const;
 
-		// Setter
+		// Setters
 			// Changes the sing of the OmegaInt
 			void changeSing();
 			// set field 'i' to a value
 			void set (const unsigned i, u64 value);
+			// Assingment Operator
+				OmegaInt const & operator = (OmegaInt const & other);
+				OmegaInt const & operator = (std::string num);
+				OmegaInt const & operator = (char const* num);
 
 
 		// Getter
-		u64 operator [] (const unsigned i) const;
-		OmegaInt const & operator = (std::string num);
-		OmegaInt const & operator = (char const* num);
+			u64 operator [] (const unsigned i) const;
 
 		// Comparison Operators
-		bool operator == (OmegaInt const &other) const;
-		bool operator != (const OmegaInt &other) const;
-		bool operator >  (const OmegaInt &other) const;
-		bool operator >= (const OmegaInt &other) const;
-		bool operator <= (const OmegaInt &other) const;
-		bool operator <  (const OmegaInt &other) const;
+			bool operator == (OmegaInt const &other) const;
+			bool operator != (OmegaInt const &other) const;
+			bool operator >  (OmegaInt const &other) const;
+			bool operator >= (OmegaInt const &other) const;
+			bool operator <= (OmegaInt const &other) const;
+			bool operator <  (OmegaInt const &other) const;
 
 		// Arithmetic Operators
-		OmegaInt operator + (OmegaInt const & other) const;
-		OmegaInt operator - (OmegaInt const & other) const;
-		OmegaInt operator * (OmegaInt const & other) const;
-		OmegaInt operator / (OmegaInt const & other) const;
-		void operator += (OmegaInt const & other);
-		void operator -= (OmegaInt const & other);
+			OmegaInt operator +  (OmegaInt const & other) const;
+			OmegaInt operator -  (OmegaInt const & other) const;
+			OmegaInt operator *  (OmegaInt const & other) const;
+			OmegaInt operator /  (OmegaInt const & other) const;
+			void     operator += (OmegaInt const & other);
+			void     operator -= (OmegaInt const & other);
+			void     operator ++ ();
+			void     operator -- ();
 
 
 		// Output Methods
-			// Prints the number as a string
-		std::string toString() const;
-		void debugPrint();
-		void print();
-		friend std::ostream& operator<<(std::ostream & os, const OmegaInt & A);
+			std::string toString() const;
+			void debugPrint();
+			void print();
+			friend std::ostream& operator<<(std::ostream & os, const OmegaInt & A);
 
 		// Templated Methods
-			template < typename T>
-			OmegaInt(T foo);
-			// template < typename T>
-			// OmegaInt const & operator = (T num);
-			template < typename T >
-			bool operator == (T const num) const;
-			template < typename T >
-			bool operator >  (T num) const;
-			template < typename T >
-			OmegaInt operator + (T num) const;
-			template < typename T >
-			OmegaInt operator - (T num) const;
-			template < typename T >
-			OmegaInt operator * (T num) const;
-			template < typename T >
-			OmegaInt operator / (T num) const;
-			template < typename T >
-			void operator += (T num);
-			template < typename T >
-			void operator -= (T num);
+			template < typename T> OmegaInt(T foo);
+			template < typename T> OmegaInt const & operator = (T num);
+			template < typename T > bool operator == (T const num) const;
+			template < typename T > bool operator >  (T num) const;
+			template < typename T > OmegaInt operator + (T num) const;
+			template < typename T > OmegaInt operator - (T num) const;
+			template < typename T > OmegaInt operator * (T num) const;
+			template < typename T > OmegaInt operator / (T num) const;
+			template < typename T > void operator += (T num);
+			template < typename T > void operator -= (T num);
 };
 
 // Templated Methods
@@ -157,15 +150,16 @@ OmegaInt::OmegaInt(T foo)
 	}
 };
 
-// template < typename T>
-// OmegaInt const & OmegaInt::operator = (T num)
-// {
-// 	if (!std::is_integral<T>::value and !std::is_floating_point<T>::value)
-// 		{ return * new OmegaInt(); }
+template < typename T>
+OmegaInt const & OmegaInt::operator = (T num)
+{
+	// If it is not a numerical type return an empty OmegaInt
+	if (!std::is_integral<T>::value and !std::is_floating_point<T>::value)
+		{ puts ("Error: Assinging non-numeric type to an OmegaInt"); return * new OmegaInt(); }
 
-// 	_copy(OmegaInt(num));
-// 	return *this;
-// };
+	_copy(OmegaInt(num));
+	return *this;
+};
 
 template < typename T >
 bool OmegaInt::operator == (T const num) const { return *this == (OmegaInt(num)); };

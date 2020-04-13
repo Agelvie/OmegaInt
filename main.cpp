@@ -63,7 +63,22 @@ u64 karatsuba (u64 num1, u64 num2)
 void testC(std::string message, bool pass)
 {
 	static unsigned i = 0;
-	cout << "TEST " << i++ << ":\t" << message << '\t';
+	cout << (pass? "\033[1;32mPASS\033[0m" : "\033[1;31mFAIL\033[0m");
+	cout << "\tTEST " << i++ << ": " << message << endl;
+}
+
+void testC_Right(std::string message, bool pass)
+{
+	static unsigned i = 0;
+	static int width = 80;
+
+	std::ostringstream ss;
+
+	ss << "TEST " << i++ << ": " << message << ' ';
+	cout << ss.str();
+
+	for (int i = 0; i < (int)(width - ss.str().size()); ++i)
+		{ cout << '_'; }
 	cout << (pass? "\033[1;32mPASS\033[0m" : "\033[1;31mFAIL\033[0m") << endl;
 }
 
@@ -129,6 +144,12 @@ int main()
 
 	A = -1;
 	testC("Test abs", A.abs() == 1);
+
+	A = 12345678;
+	testC("Test num of digits positive", A.digits() == 8);
+
+	A = -12345678;
+	testC("Test num of digits positive", A.digits() == 8);
 
 	// cout << "(X - X)\n";
 	// (X - X).debugPrint();

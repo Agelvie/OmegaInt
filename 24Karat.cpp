@@ -105,7 +105,7 @@ OmegaInt const & OmegaInt::operator = (OmegaInt const & other)
 OmegaInt const & OmegaInt::operator = (std::string num)
 	{ _copy(OmegaInt(num)); return *this; };
 
-OmegaInt const & OmegaInt::operator =(char const* num)
+OmegaInt const & OmegaInt::operator = (char const* num)
 	{ _copy(OmegaInt(num)); return *this; };
 
 
@@ -135,6 +135,11 @@ OmegaInt OmegaInt::abs() const
 	if ( ! A.isPOSITIVE ){ A.changeSing(); }
 	return A;
 };
+	// Returns the number of digits
+u64 OmegaInt::digits() const
+{
+	return this->isPOSITIVE? (this->toString()).size() : (this->toString()).size()-1;
+}
 
 // Setter
 	// Changes the sing of the OmegaInt
@@ -312,29 +317,33 @@ OmegaInt OmegaInt::operator - (OmegaInt const & other) const
 	return RESULT;
 };
 
-// OmegaInt OmegaInt::_karatsuba(OmegaInt const & A, OmegaInt const & B)
-// {
-	// if (A < ALLOWED and B < ALLOWED)
-	// {
-	// 	return ;
-	// }
+/*
+// u64 OmegaInt::_karatsuba(u64 const & A, u64 const & B)
 
-	/* calculates the size of the numbers */
-	// m = min(size_base10(num1), size_base10(num2))
-	// m2 = floor(m/2) 
-	/*m2 = ceil(m/2) will also work */
+OmegaInt OmegaInt::_karatsuba(OmegaInt const & A, OmegaInt const & B)
+{
+	if (A.fields() == 1 and B.fields() == 1)
+	{
 
-	/* split the digit sequences in the middle */
-	// high1, low1 = split_at(num1, m2)
-	// high2, low2 = split_at(num2, m2)
+	}
 
-	/* 3 calls made to numbers approximately half the size */
-	// z0 = karatsuba(low1, low2)
-	// z1 = karatsuba((low1 + high1), (low2 + high2))
-	// z2 = karatsuba(high1, high2)
+	// calculates the size of the numbers
+	m = min(size_base10(num1), size_base10(num2))
+	m2 = floor(m/2) 
+	// m2 = ceil(m/2) will also work
 
-	// return (z2 * 10 ^ (m2 * 2)) + ((z1 - z2 - z0) * 10 ^ m2) + z0
-// }
+	// split the digit sequences in the middle
+	high1, low1 = split_at(num1, m2)
+	high2, low2 = split_at(num2, m2)
+
+	// 3 calls made to numbers approximately half the size
+	z0 = karatsuba(low1, low2)
+	z1 = karatsuba((low1 + high1), (low2 + high2))
+	z2 = karatsuba(high1, high2)
+
+	return (z2 * 10 ^ (m2 * 2)) + ((z1 - z2 - z0) * 10 ^ m2) + z0
+}
+*/
 
 OmegaInt OmegaInt::operator * (OmegaInt const & other) const
 {
@@ -360,15 +369,16 @@ OmegaInt OmegaInt::operator / (OmegaInt const & other) const
 	return other;
 };
 
+// Abbreviated Operators
 void OmegaInt::operator += (OmegaInt const & other)
-{
-	*this = *this + other;
-}
+	{ *this = *this + other; }
 
 void OmegaInt::operator -= (OmegaInt const & other)
-{
-	*this = *this - other;
-}
+	{ *this = *this - other; }
+
+void OmegaInt::operator ++ () { *this += (OmegaInt(1)); }
+
+void OmegaInt::operator -- () { *this -= (OmegaInt(1)); }
 
 // Prints the number as a string
 std::string OmegaInt::toString() const
