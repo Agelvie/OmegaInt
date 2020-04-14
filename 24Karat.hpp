@@ -126,6 +126,13 @@ class OmegaInt
 			template < typename T > OmegaInt operator / (T num) const;
 			template < typename T > void operator += (T num);
 			template < typename T > void operator -= (T num);
+
+
+
+OmegaInt _split_from(u64 split) const;
+OmegaInt _split_to(u64 split) const;
+OmegaInt _karatsuba(OmegaInt const & other) const;
+
 };
 
 // Templated Methods

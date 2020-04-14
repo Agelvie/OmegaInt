@@ -8,7 +8,6 @@ typedef unsigned long long u64;
 using std::cout;
 using std::endl;
 
-
 void splitInt ( u64 num, u64 n, u64 &high, u64 &low )
 {
 	low = num; high = 0;
@@ -164,12 +163,20 @@ int main()
 	while(A > 0){ A -= 1; }
 	testC("Test while(A > 0)", A == 0);
 
-	testC("1 Digit Multiplication", OmegaInt(2) * OmegaInt(2) == 4);
-	
-	testC("5 Digit Multiplication", OmegaInt(12345) * OmegaInt(67890) == 838102050);
+	// cout << (OmegaInt(2) * OmegaInt(2)) << endl;
 
-	testC("16 Digit Multiplication", OmegaInt("1092384710293847") * OmegaInt("1092384710293847") 
-																== "1193304355283772039845086059409");
+	cout << OmegaInt(1234567)._split_to(1) << endl;
+	cout << OmegaInt(1234567)._split_to(2) << endl;
+	cout << OmegaInt(1234567)._split_to(3) << endl;
+	cout << OmegaInt(1234567)._split_to(4) << endl;
+	cout << OmegaInt(1234567)._split_to(5) << endl;
+
+	// testC("1 Digit Multiplication", OmegaInt(2) * OmegaInt(2) == 4);
+	
+	// testC("5 Digit Multiplication", OmegaInt(12345) * OmegaInt(67890) == 838102050);
+
+	// testC("16 Digit Multiplication", OmegaInt("1092384710293847") * OmegaInt("1092384710293847") 
+	// 															== "1193304355283772039845086059409");
 
 	return 0;
 }

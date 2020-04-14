@@ -3,3 +3,4 @@ test
 *.o
 */*.o
 *.sublime-project
+miniKaratsuba*

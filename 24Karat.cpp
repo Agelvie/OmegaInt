@@ -317,57 +317,126 @@ OmegaInt OmegaInt::operator - (OmegaInt const & other) const
 	return RESULT;
 };
 
-/*
-// u64 OmegaInt::_karatsuba(u64 const & A, u64 const & B)
 
-OmegaInt OmegaInt::_karatsuba(OmegaInt const & A, OmegaInt const & B)
+
+
+
+
+// /*
+
+struct _Karat
 {
-	if (A.fields() == 1 and B.fields() == 1)
+	u64 static digits(u64 A, u64 base){ return A == 0? 0 : floor( log( A ) / log(base) ) + 1; }
+
+	u64 static split_from(u64 A, u64 split)
+		{ return A / pow(10,split); }
+
+	u64 static split_to(u64 A, u64 split)
+		{ return A - (pow(10,split) * split_from( A, split )); }
+
+	u64 static karatsuba(u64 A, u64 B)
 	{
+		if (A == 0 or B == 0){ return 0; }
 
+		if ( digits(A,10) == 1 and digits(B,10) == 1)
+			{ return A * B; }
+
+		// calculates the size of the numbers
+		u64 m = std::max( digits(A,10), digits(B,10) );
+		u64 m2 = m/2;
+
+
+		// split the digit sequences in the middle
+		u64 A_high = split_from (A, m2);
+		u64 A_low =  split_to   (A, m2);
+		u64 B_high = split_from (B, m2);
+		u64 B_low =  split_to   (B, m2);
+
+		// 3 calls made to numbers approximately half the size
+		u64 z0 = karatsuba( A_low, B_low );
+		u64 z1 = karatsuba( (A_low + A_high), (B_low + B_high) );
+		u64 z2 = karatsuba( A_high, B_high );
+
+		return (z2 * pow(10, (m2 * 2) ) ) + ( (z1 - z2 - z0) * pow(10, m2) ) + z0;
 	}
+};
 
-	// calculates the size of the numbers
-	m = min(size_base10(num1), size_base10(num2))
-	m2 = floor(m/2) 
-	// m2 = ceil(m/2) will also work
-
-	// split the digit sequences in the middle
-	high1, low1 = split_at(num1, m2)
-	high2, low2 = split_at(num2, m2)
-
-	// 3 calls made to numbers approximately half the size
-	z0 = karatsuba(low1, low2)
-	z1 = karatsuba((low1 + high1), (low2 + high2))
-	z2 = karatsuba(high1, high2)
-
-	return (z2 * 10 ^ (m2 * 2)) + ((z1 - z2 - z0) * 10 ^ m2) + z0
+OmegaInt OmegaInt::_split_from(u64 split) const
+{
+	if ( split > this->fields() )
+	{
+		return OmegaInt(0);
+	}
+	else
+	{
+		return OmegaInt(this->fields() - split, (this->NUMBERS) + split, true );
+	}
 }
-*/
 
-OmegaInt OmegaInt::operator * (OmegaInt const & other) const
+OmegaInt OmegaInt::_split_to(u64 split) const
+{
+	if ( split > this->fields() ){ split = this->fields(); }
+
+	return OmegaInt(split, this->NUMBERS, true );
+}
+
+OmegaInt OmegaInt::_karatsuba(OmegaInt const & other) const
 {
 	OmegaInt A = *this;
 	OmegaInt B = other;
-	// OmegaInt RESULT( A.fields() + B.fields(), true );
-	OmegaInt RESULT = *(new OmegaInt(0));
-	// int i = 0; int* j= new int; cout << &A << '\n' << &B << '\n' << &RESULT << '\n' << &i << '\n' << &j << endl;
+	
+	if (A == 0 or B == 0){ return 0; }
 
-	/*// NAIVE IMPLEMENTATION
-	while(B > 0)
+	if (A.fields() == 1 and B.fields() == 1)
 	{
-		RESULT += A;
-		B -= 1;
-	}*/
+		_Karat::karatsuba(A.NUMBERS[0], B.NUMBERS[0]);
+	}
 
+	// calculates the size of the numbers
+	u64 m = std::max( A.fields(), B.fields() );
+	u64 m2 = m/2;
 
-	return RESULT;
+	// split the digit sequences in the middle
+	OmegaInt A_high = A._split_from (m2);
+	OmegaInt A_low =  A._split_to   (m2);
+	OmegaInt B_high = B._split_from (m2);
+	OmegaInt B_low =  B._split_to   (m2);
+
+	// 3 calls made to numbers approximately half the size
+	OmegaInt z0 = A_low._karatsuba( B_low );
+	OmegaInt z1 = (A_low + A_high)._karatsuba( B_low + B_high );
+	OmegaInt z2 = A_high._karatsuba( B_high );
+
+	return (z2 * pow(10, (m2 * 2) ) ) + ( (z1 - z2 - z0) * pow(10, m2) ) + z0;
+}
+
+// */
+
+OmegaInt OmegaInt::operator * (OmegaInt const & other) const
+{
+	OmegaInt RESULT( this->fields() + other.fields(), this->sing() == other.sing() );
+	OmegaInt A = this->abs();
+	OmegaInt B = other.abs();
+
+	/*// NAIVE IMPLEMENTATION while(B > 0){ RESULT += A; B -= 1; } */
+
+	// RESULT = A._karatsuba(B);
+	return A._karatsuba(B);
 };
 OmegaInt OmegaInt::operator / (OmegaInt const & other) const
 {
 
 	return other;
 };
+
+
+
+
+
+
+
+
+
 
 // Abbreviated Operators
 void OmegaInt::operator += (OmegaInt const & other)
