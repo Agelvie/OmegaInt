@@ -126,8 +126,8 @@ int main()
 	A = (OmegaInt(101) - OmegaInt(98));
 	testC("Subtraction '-' and Maintenance", A == 3 and A.fields() == 1 );
 
-	A = (OmegaInt(9999) + OmegaInt(1));
-	testC("Maintenance", A == 10000 and A.fields() == 3);
+	// A = (OmegaInt(9999) + OmegaInt(1));
+	// testC("Maintenance", A == 10000 and A.fields() == 3);
 
 	A = 3; A += OmegaInt(1);
 	testC("Operator +=", A == 4);
@@ -163,20 +163,25 @@ int main()
 	while(A > 0){ A -= 1; }
 	testC("Test while(A > 0)", A == 0);
 
-	// cout << (OmegaInt(2) * OmegaInt(2)) << endl;
+	testC("String Consrtuctor with 0 -> OmegaInt(\"0\") ", OmegaInt("0") == 0);
 
-	cout << OmegaInt(1234567)._split_to(1) << endl;
-	cout << OmegaInt(1234567)._split_to(2) << endl;
-	cout << OmegaInt(1234567)._split_to(3) << endl;
-	cout << OmegaInt(1234567)._split_to(4) << endl;
-	cout << OmegaInt(1234567)._split_to(5) << endl;
-
-	// testC("1 Digit Multiplication", OmegaInt(2) * OmegaInt(2) == 4);
+	// for (int i = 0; i < 7; ++i)
+	// {
+	// 	cout << OmegaInt(1234)._split_from(i) << '\t' << OmegaInt(1234)._split_to(i) << endl;
+	// }
+	// for (int i = 0; i < 5; ++i)
+	// {
+	// 	cout << OmegaInt(1234)._e10(i) << endl;
+	// }
 	
-	// testC("5 Digit Multiplication", OmegaInt(12345) * OmegaInt(67890) == 838102050);
+	testC("1 Digit Multiplication", OmegaInt(2) * OmegaInt(2) == 4);
 
-	// testC("16 Digit Multiplication", OmegaInt("1092384710293847") * OmegaInt("1092384710293847") 
-	// 															== "1193304355283772039845086059409");
+	testC("5 Digit Multiplication", OmegaInt(12345) * OmegaInt(67890) == 838102050);
+
+	testC("16 Digit Multiplication", OmegaInt("1092384710293847") * OmegaInt("1092384710293847") 
+																== "1193304355283772039845086059409");
+
+	cout << (OmegaInt("1092384710293847") * OmegaInt("1092384710293847")) << endl;
 
 	return 0;
 }

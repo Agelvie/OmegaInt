@@ -25,7 +25,8 @@ OmegaInt::OmegaInt(std::string num)
 	// clean the num string
 	while (num.find(' ') == 0){ num = num.substr(1,num.size()); }
 	while (num.find('0') == 0){ num = num.substr(1,num.size()); }
-	
+	if (num.empty()){ num = "0"; }
+
 	isPOSITIVE = true;
 	// check for a negative sing
 	if (num.find('-') != string::npos)
@@ -108,7 +109,7 @@ OmegaInt const & OmegaInt::operator = (std::string num)
 OmegaInt const & OmegaInt::operator = (char const* num)
 	{ _copy(OmegaInt(num)); return *this; };
 
-
+	// Copy helper function
 void OmegaInt::_copy(OmegaInt const & other)
 {
 	if (NUMBERS != NULL){ delete[] NUMBERS; }
@@ -145,10 +146,14 @@ u64 OmegaInt::digits() const
 	// Changes the sing of the OmegaInt
 void OmegaInt::changeSing(){ isPOSITIVE = !isPOSITIVE; };
 
-// Getter and Setter? Make private?
+// Getter. Make private?
 u64 OmegaInt::operator [] (const unsigned i) const { return NUMBERS[i]; }
 
-void OmegaInt::set (const unsigned i, u64 value) { NUMBERS[i] = value; }
+void OmegaInt::set (const unsigned i, u64 value)
+{
+	if ( i > this->fields() ){ this->_reSize(i+1); } 
+	NUMBERS[i] = value;
+}
 
 // Comparison Operators
 bool OmegaInt::operator == (const OmegaInt &other) const
@@ -338,7 +343,7 @@ struct _Karat
 	{
 		if (A == 0 or B == 0){ return 0; }
 
-		if ( digits(A,10) == 1 and digits(B,10) == 1)
+		if ( digits(A,10) == 1 and digits(B,10) == 1 )
 			{ return A * B; }
 
 		// calculates the size of the numbers
@@ -361,23 +366,31 @@ struct _Karat
 	}
 };
 
+	// split the OmegaInt from a certain digit
 OmegaInt OmegaInt::_split_from(u64 split) const
 {
-	if ( split > this->fields() )
-	{
-		return OmegaInt(0);
-	}
-	else
-	{
-		return OmegaInt(this->fields() - split, (this->NUMBERS) + split, true );
-	}
+	string temp = this->toString();
+	if (split > temp.size()){ split = temp.size(); }
+	temp = temp.substr(0, split);
+	return OmegaInt( temp.empty()? "0" : temp );
 }
-
+	// split the OmegaInt to a certain digit
 OmegaInt OmegaInt::_split_to(u64 split) const
 {
-	if ( split > this->fields() ){ split = this->fields(); }
-
-	return OmegaInt(split, this->NUMBERS, true );
+	string temp = this->toString();
+	if (split > temp.size()){ split = temp.size(); }
+	temp = temp.substr(split, temp.size());
+	return OmegaInt( temp.empty()? "0" : temp );
+}
+	
+	// Multiplicating by a power of 10
+OmegaInt OmegaInt::_e10(u64 power) const
+{
+	string temp = this->toString();
+	// Add tailing zeros
+	for (u64 i = 0; i < power; ++i)
+		{ temp += '0'; }
+	return OmegaInt(temp);
 }
 
 OmegaInt OmegaInt::_karatsuba(OmegaInt const & other) const
@@ -385,43 +398,45 @@ OmegaInt OmegaInt::_karatsuba(OmegaInt const & other) const
 	OmegaInt A = *this;
 	OmegaInt B = other;
 	
-	if (A == 0 or B == 0){ return 0; }
+	if (A == 0 or B == 0){ return OmegaInt(0); }
 
-	if (A.fields() == 1 and B.fields() == 1)
+	if ( A < ALLOWED and B < ALLOWED and A.fields() == 1 and B.fields() == 1 )
 	{
-		_Karat::karatsuba(A.NUMBERS[0], B.NUMBERS[0]);
+		return OmegaInt( _Karat::karatsuba(A.NUMBERS[0], B.NUMBERS[0]) );
 	}
 
 	// calculates the size of the numbers
-	u64 m = std::max( A.fields(), B.fields() );
-	u64 m2 = m/2;
+	// u64 m = std::max( A.fields(), B.fields() );
+	u64 m2 = std::min( A.digits(), B.digits() ) / 2;
+	// u64 m2 = m/2;
 
 	// split the digit sequences in the middle
 	OmegaInt A_high = A._split_from (m2);
-	OmegaInt A_low =  A._split_to   (m2);
+	OmegaInt A_low  = A._split_to   (m2);
 	OmegaInt B_high = B._split_from (m2);
-	OmegaInt B_low =  B._split_to   (m2);
+	OmegaInt B_low  = B._split_to   (m2);
 
 	// 3 calls made to numbers approximately half the size
 	OmegaInt z0 = A_low._karatsuba( B_low );
-	OmegaInt z1 = (A_low + A_high)._karatsuba( B_low + B_high );
+	OmegaInt z1 = ( A_low + A_high )._karatsuba( B_low + B_high );
 	OmegaInt z2 = A_high._karatsuba( B_high );
 
-	return (z2 * pow(10, (m2 * 2) ) ) + ( (z1 - z2 - z0) * pow(10, m2) ) + z0;
+	return (z2._e10(m2 * 2) ) + ( (z1 - z2 - z0)._e10(m2) ) + z0;
 }
 
 // */
 
 OmegaInt OmegaInt::operator * (OmegaInt const & other) const
 {
-	OmegaInt RESULT( this->fields() + other.fields(), this->sing() == other.sing() );
+	OmegaInt RESULT;
 	OmegaInt A = this->abs();
 	OmegaInt B = other.abs();
 
 	/*// NAIVE IMPLEMENTATION while(B > 0){ RESULT += A; B -= 1; } */
 
-	// RESULT = A._karatsuba(B);
-	return A._karatsuba(B);
+	RESULT = A._karatsuba(B);
+	if ( this->sing() != other.sing() ){RESULT.changeSing();}
+	return RESULT;
 };
 OmegaInt OmegaInt::operator / (OmegaInt const & other) const
 {
@@ -488,7 +503,7 @@ std::ostream& operator<<(std::ostream & os, const OmegaInt & A)
 	return os;
 }
 
-void OmegaInt::_reSize(u64 newSize, u64* NUMBERS)
+void OmegaInt::_reSize(u64 newSize)
 {
 	if (newSize <= 0){ return; }
 	// Make new Container
@@ -512,7 +527,7 @@ void OmegaInt::_maintenance()
 			}
 			else
 			{
-				_reSize( TOTALFIELDS+1, NUMBERS );
+				this->_reSize( TOTALFIELDS+1 );
 				// Add the carry
 				NUMBERS[TOTALFIELDS]++;
 				// Increase size of container
@@ -538,7 +553,7 @@ void OmegaInt::_maintenance()
 		// Change the size of the container
 		TOTALFIELDS -= fieldsErasable;
 		// Resize to fit
-		_reSize( TOTALFIELDS, NUMBERS );
+		this->_reSize( TOTALFIELDS );
 	}
 
 	// Ensure that the zero is represented has positive

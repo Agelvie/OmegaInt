@@ -14,13 +14,13 @@ typedef unsigned long long u64;
 
 // Maximum number of digits a field can have. (System depedent)
 // const unsigned MAXDIGITS = floor(std::numeric_limits<u64>::digits * log10(2) / 2);
-// const unsigned MAXDIGITS = pow(10, floor(log10(std::numeric_limits<u64>::digits)));
-const unsigned MAXDIGITS = 2; // for testing purposes
+const unsigned MAXDIGITS = pow(10, floor(log10(std::numeric_limits<u64>::digits)));
+// const unsigned MAXDIGITS = 5; // for testing purposes
 
 // Maximum value that a field can have. (System depedent), values are strictly less than
 const u64 MAXFIELDVALUE = pow(10,MAXDIGITS);
 // Value al which it is safe to multiply two fields of an OmegaInt
-const u64 ALLOWED = fmod(log10(MAXFIELDVALUE), 2) == 0? sqrt(MAXFIELDVALUE) : sqrt(MAXFIELDVALUE -1);
+const u64 ALLOWED = sqrt(MAXFIELDVALUE -1);
 // #define MAXFIELDVALUE (pow(10,MAXDIGITS) - 1);
 
 using std::cout;
@@ -45,7 +45,7 @@ class OmegaInt
 	
 		// Maintenance routine
 		void _maintenance();
-		void _reSize(u64 newSize, u64* NUMBERS);
+		void _reSize(u64 newSize);
 
 	public:
 		// Construction and Deletion
@@ -127,11 +127,13 @@ class OmegaInt
 			template < typename T > void operator += (T num);
 			template < typename T > void operator -= (T num);
 
-
-
-OmegaInt _split_from(u64 split) const;
-OmegaInt _split_to(u64 split) const;
-OmegaInt _karatsuba(OmegaInt const & other) const;
+// Multiplicating by a power of 10
+	OmegaInt _e10(u64 power) const;
+// split the OmegaInt from a certain digit
+	OmegaInt _split_from(u64 split) const;
+// split the OmegaInt to a certain digit
+	OmegaInt _split_to(u64 split) const;
+	OmegaInt _karatsuba(OmegaInt const & other) const;
 
 };
 
@@ -146,7 +148,8 @@ OmegaInt::OmegaInt(T foo)
 	catch(int e)
 	{ cout << "Incorrect constructor, for pointer types the correct constructor is OmegaInt(u64 fields, u64* nums, bool pos);"; }
 	isPOSITIVE = foo >= 0;
-	u64 num = std::abs(foo);
+	u64 num = std::is_unsigned<T>::value? foo : /*std::is_integral<T>::value? std::llabs(foo) :*/ std::fabs(foo);
+
 	TOTALFIELDS = num != 0? floor( (log10(num) )/ MAXDIGITS ) + 1 : 1;
 
 	NUMBERS = (u64*) calloc( TOTALFIELDS, sizeof(u64) );
