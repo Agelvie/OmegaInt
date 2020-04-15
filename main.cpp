@@ -180,74 +180,24 @@ int main()
 	
 	testC("1 Digit Multiplication", OmegaInt(2) * OmegaInt(2) == 4);
 
-	// (OmegaInt(11538000) + OmegaInt(272205)).debugPrint();
-	// cout << OmegaInt(11538000) + OmegaInt(272205) << '\t' << 11538000 + 272205 << endl;
+	testC("- * + Multiplication", OmegaInt(-12345) * OmegaInt(6789) == -83810205);
+	testC("+ * - Multiplication", OmegaInt(12345) * OmegaInt(-6789) == -83810205);
+	testC("- * - Multiplication", OmegaInt(-12345) * OmegaInt(-6789) == 83810205);
 
-	// testC("- * + Multiplication", OmegaInt(-12345) * OmegaInt(6789) == -83810205);
-	// testC("+ * - Multiplication", OmegaInt(12345) * OmegaInt(-6789) == -83810205);
-	// testC("- * - Multiplication", OmegaInt(-12345) * OmegaInt(-6789) == 83810205);
+	testC("5 Digit Multiplication", OmegaInt(12345) * OmegaInt(6789) == 83810205);
 
-	// testC("5 Digit Multiplication", OmegaInt(12345) * OmegaInt(6789) == 83810205);
-
-	// testC("16 Digit Multiplication", OmegaInt("1092384710293847") * OmegaInt("1092384710293847") 
-																// == "1193304355283772039845086059409");
+	testC("16 Digit Multiplication", OmegaInt("1092384710293847") * OmegaInt("1092384710293847") 
+																== "1193304355283772039845086059409");
 
 
-// 	testC("64 Digit Multiplication", OmegaInt("3141592653589793238462643383279502884197169399375105820974944592") 
-// 								   * OmegaInt("2718281828459045235360287471352662497757247093699959574966967627") 
-// == "8539734222673567065463550869546574495034888535765114961879601127067743044893204848617875072216249073013374895871952806582723184");
+	testC("64 Digit Multiplication", OmegaInt("3141592653589793238462643383279502884197169399375105820974944592") 
+								   * OmegaInt("2718281828459045235360287471352662497757247093699959574966967627") 
+== "8539734222673567065463550869546574495034888535765114961879601127067743044893204848617875072216249073013374895871952806582723184");
 
-cout <<
+testC( "212 Digit Multiplication",
   OmegaInt("27182818284590452353602829837409234659812834692837659238476574713526624977534972470345936999595749669676271238410298409234875923831415926535897932384626433832795028842837491328478321971987369399375105820974944592") 
 * OmegaInt("27182818284590452353602829837409234659812834692837659238476574713526624977534972470345936999595749669676271238410298409234875923831415926535897932384626433832795028842837491328478321971987369399375105820974944592") 
-<< endl;
-
-
-	// cout << (OmegaInt("1092384710293847") * OmegaInt("1092384710293847")) << endl;
+== "738905609893065022723040306338812103403690869683176224646524075329403239381000705130240528793667901575103384514255161480205215799687383613757095682703930175950904351659328420371856756618493649480324118217553822251088493797632925153114551664381475270521027369906603232527693994952884709313387584104310591674284595556118512001880922214682100257256821788916821002367137392684790030227970848898031312651967598223967837470046464");
 
 	return 0;
 }
-
-// procedure karatsuba(num1, num2)
-//   if (num1 < 10) or (num2 < 10)
-//     return num1*num2
-
-//   /* calculates the size of the numbers */
-//   m = min(size_base10(num1), size_base10(num2))
-//   m2 = floor(m/2) 
-//   /*m2 = ceil(m/2) will also work */
-
-//   /* split the digit sequences in the middle */
-//   high1, low1 = split_at(num1, m2)
-//   high2, low2 = split_at(num2, m2)
-
-//   /* 3 calls made to numbers approximately half the size */
-//   z0 = karatsuba(low1, low2)
-//   z1 = karatsuba((low1 + high1), (low2 + high2))
-//   z2 = karatsuba(high1, high2)
-
-//   return (z2 * 10 ^ (m2 * 2)) + ((z1 - z2 - z0) * 10 ^ m2) + z0
-
-// 3141592653589793238462643383279502884197169399375105820974944592
-// 2718281828459045235360287471352662497757247093699959574966967627
-
-
-	// u64 a = atoll(argv[1]), b = atoll(argv[2]);
-
-	// splitInt(123456789, 5, a, b);
-	// cout << a << ' ' << b << endl;
-
-	// cout << a << 'x' << b << " = " << karatsuba(a,b) << endl;
-
-		// cout << ((string) "Hello world").size() << endl;
-		// cout << numeric_limits<unsigned long long>::digits << endl;
-		// cout << numeric_limits<unsigned long long>::digits * log10(2) << endl;
-		// cout << "ceil(19/7) = "<< 19/7 << " + " << (19%7 != 0) << endl;
-		// cout << "ceil(18/2) = "<< 18/2 << " + " << (18%2 != 0) << endl;
-		// string a = "Hello_World"; int i = 3;
-		// while (a.size() > 0)
-		// {
-		// 	cout << a.size() << ' ' << a.substr(a.size() - i, a.size()) << endl;
-		// 	a.erase(a.size() - i, a.size());
-		// 	if ( i >= a.size() ){ i = a.size(); }
-		// }
