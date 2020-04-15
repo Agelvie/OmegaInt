@@ -1,6 +1,8 @@
 .DS_Store
-test
 *.o
 */*.o
 *.sublime-project
-miniKaratsuba*
+test
+miniKaratsuba
+div
+bit

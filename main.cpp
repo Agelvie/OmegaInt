@@ -130,17 +130,14 @@ int main()
 	A = (OmegaInt(101) - OmegaInt(98));
 	testC("Subtraction '-' and Maintenance", A == 3 and A.fields() == 1 );
 
-	// u64 temp = MAXFIELDVALUE - 1;
-	// cout << OmegaInt(temp) << endl;
-	// A = OmegaInt(temp) + 1;
-	// cout << A << endl;
-	// cout << OmegaInt(MAXFIELDVALUE) << endl;
-	// cout << A.fields() << endl;
 	A = OmegaInt(MAXFIELDVALUE - 1) + 1;
 	testC("Maintenance Giving", A == MAXFIELDVALUE and A.fields() == 2);
 
 	A = OmegaInt(MAXFIELDVALUE) - 1;
 	testC("Maintenance Taking", A == MAXFIELDVALUE-1 and A.fields() == 1);
+
+	testC("Operator >", OmegaInt(3) > OmegaInt(2));
+	testC("Operator ==", OmegaInt(3) == OmegaInt(3));
 
 	A = 3; A += OmegaInt(1);
 	testC("Operator +=", A == 4);

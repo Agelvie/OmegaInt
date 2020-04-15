@@ -154,7 +154,7 @@ void OmegaInt::set (const unsigned i, u64 value)
 // Comparison Operators
 bool OmegaInt::operator == (const OmegaInt &other) const
 {
-	const OmegaInt A = *this;
+	const OmegaInt& A = *this;
 	const OmegaInt& B = other;
 	bool equalLength = A.fields() == B.fields();	// Different lenghts does NOT nesesarily mean
 	bool isAlonger = A.fields() > B.fields();		// that they are different numbers
@@ -184,8 +184,9 @@ bool OmegaInt::operator != (const OmegaInt &other) const
 
 bool OmegaInt::operator >  (const OmegaInt &other) const
 {
-	const OmegaInt A = *this;
+	const OmegaInt& A = *this;
 	const OmegaInt& B = other;
+
 	bool equalLength = A.fields() == B.fields();	// Different lenghts does NOT nesesarily mean
 	bool isAlonger = A.fields() > B.fields();		// that they are different numbers
 	unsigned min = isAlonger? B.fields() : A.fields();	// Pick the shortest one
@@ -235,7 +236,7 @@ OmegaInt OmegaInt::_add(OmegaInt const & other) const
 {
 	// ONLY returns positive OmegaInt's
 	/* For simplicity alising ( this + other ) = ( A + B ) = RESULT */
-	const OmegaInt A = *this;
+	const OmegaInt& A = *this;
 	const OmegaInt& B = other;
 
 	unsigned min = A.fields() > B.fields()? B.fields() : A.fields();
@@ -258,21 +259,16 @@ OmegaInt OmegaInt::_subtract(OmegaInt const & other) const
 	bool carry = false;
 	// returns OmegaInt's with APPROPRIATE sing given the operands
 	/* For simplicity alising ( this - other ) = ( A - B ) = RESULT */
-	OmegaInt A = *this;
-	OmegaInt B = other;
+	const OmegaInt& A = other.abs() > this->abs()? other : *this;
+	const OmegaInt& B = other.abs() > this->abs()? *this : other;
 
 	unsigned min = A.fields() > B.fields()? B.fields() : A.fields();
 	unsigned Max = A.fields() > B.fields()? A.fields() : B.fields();
 	
 	OmegaInt RESULT( Max+1, true );
 
-	if (B.abs() > A.abs())
-	{
-		OmegaInt C(A);
-		A = B;
-		B = C;
-		RESULT.changeSing();
-	}
+	if (other.abs() > this->abs())
+		{ RESULT.changeSing(); }
 
 	u64 temp;
 
@@ -351,8 +347,8 @@ OmegaInt OmegaInt::_karatsuba(OmegaInt const & other) const
 {
 	// static long i = 0;
 	// cout << i++ << endl;
-	OmegaInt A = *this;
-	OmegaInt B = other;
+	const OmegaInt& A = *this;
+	const OmegaInt& B = other;
 	// cout << A << '\t' << B << endl;
 	if (A == 0 or B == 0){ return OmegaInt(0); }
 
