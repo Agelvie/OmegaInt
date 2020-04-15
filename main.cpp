@@ -130,8 +130,17 @@ int main()
 	A = (OmegaInt(101) - OmegaInt(98));
 	testC("Subtraction '-' and Maintenance", A == 3 and A.fields() == 1 );
 
-	// A = (OmegaInt(9999) + OmegaInt(1));
-	// testC("Maintenance", A == 10000 and A.fields() == 3);
+	// u64 temp = MAXFIELDVALUE - 1;
+	// cout << OmegaInt(temp) << endl;
+	// A = OmegaInt(temp) + 1;
+	// cout << A << endl;
+	// cout << OmegaInt(MAXFIELDVALUE) << endl;
+	// cout << A.fields() << endl;
+	A = OmegaInt(MAXFIELDVALUE - 1) + 1;
+	testC("Maintenance Giving", A == MAXFIELDVALUE and A.fields() == 2);
+
+	A = OmegaInt(MAXFIELDVALUE) - 1;
+	testC("Maintenance Taking", A == MAXFIELDVALUE-1 and A.fields() == 1);
 
 	A = 3; A += OmegaInt(1);
 	testC("Operator +=", A == 4);
@@ -153,11 +162,6 @@ int main()
 
 	A = -12345678;
 	testC("Test num of digits positive", A.digits() == 8);
-
-	// cout << "(X - X)\n";
-	// (X - X).debugPrint();
-	// cout << "OmegaInt(0)\n";
-	// (OmegaInt(0)).debugPrint();
 
 	testC("Test X - X", (X - X) == 0);
 	A = 1; testC("Test 1 - 1", (A - 1) == 0);

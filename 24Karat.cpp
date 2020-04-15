@@ -4,10 +4,6 @@ void bug()
 	static unsigned i = 0;
 	cout << i++;_
 }
-	//@TODO -- implement *
-	// 				-- implement splitFrom() overload for OmegaInt and u64
-	// 				-- implement splitTo() overload for OmegaInt and u64
-	//				-- implement _karatsuba
 	//@TODO -- implement /
 
 	// Empty
@@ -324,11 +320,6 @@ OmegaInt OmegaInt::operator - (OmegaInt const & other) const
 	return RESULT;
 };
 
-
-
-
-
-
 	// split the OmegaInt from a certain digit
 OmegaInt OmegaInt::_split_from(u64 split) const
 {
@@ -370,15 +361,8 @@ OmegaInt OmegaInt::_karatsuba(OmegaInt const & other) const
 		return A.NUMBERS[0] * B.NUMBERS[0];
 	}
 
-	// if ( A < ALLOWED and B < ALLOWED and A.fields() == 1 and B.fields() == 1 )
-	// {
-	// 	return OmegaInt( _Karat::karatsuba(A.NUMBERS[0], B.NUMBERS[0]) );
-	// }
-
 	// calculates the size of the numbers
-	// u64 m = std::max( A.fields(), B.fields() );
 	u64 m2 = ceil((double)std::max( A.digits(), B.digits() ) / 2);
-	// u64 m2 = m/2;
 
 	// split the digit sequences in the middle
 	OmegaInt A_high = A._split_from (m2);
@@ -426,15 +410,6 @@ OmegaInt OmegaInt::operator / (OmegaInt const & other) const
 
 	return other;
 };
-
-
-
-
-
-
-
-
-
 
 // Abbreviated Operators
 void OmegaInt::operator += (OmegaInt const & other)

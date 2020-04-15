@@ -14,6 +14,7 @@ typedef unsigned long long u64;
 
 // Maximum number of digits a field can have. (System depedent)
 const unsigned MAXDIGITS = floor( log10(std::numeric_limits<u64>::max()) - 1 );
+// const unsigned MAXDIGITS = 2; // for testing purposes
 // const unsigned MAXDIGITS = 4; // for testing purposes
 // const unsigned MAXDIGITS = 10; // for testing purposes
 
@@ -31,21 +32,31 @@ class OmegaInt
 {
 	private:
 		// Number of pieces the number is split into
-		u64 TOTALFIELDS;
+			u64 TOTALFIELDS;
 		// Pieces that comprice the number
-		u64* NUMBERS = NULL;
+			u64* NUMBERS = NULL;
 		// Sing, is it positive?
-		bool isPOSITIVE;
+			bool isPOSITIVE;
 		// Copy function
-		void _copy(OmegaInt const & other);
+			void _copy(OmegaInt const & other);
 		// Addition function
-		OmegaInt _add(OmegaInt const & other) const;
+			OmegaInt _add(OmegaInt const & other) const;
 		// Subtraction function
-		OmegaInt _subtract(OmegaInt const & other) const;
+			OmegaInt _subtract(OmegaInt const & other) const;
 	
 		// Maintenance routine
-		void _maintenance();
-		void _reSize(u64 newSize);
+			void _maintenance();
+			void _reSize(u64 newSize);
+
+		// Multiplication Helper Functions
+			// Multiplicating by a power of 10
+				OmegaInt _e10(u64 power) const;
+			// split the OmegaInt from a certain digit
+				OmegaInt _split_from(u64 split) const;
+			// split the OmegaInt to a certain digit
+				OmegaInt _split_to(u64 split) const;
+			// Main algorithm
+				OmegaInt _karatsuba(OmegaInt const & other) const;
 
 	public:
 		// Construction and Deletion
@@ -108,7 +119,6 @@ class OmegaInt
 			void     operator ++ ();
 			void     operator -- ();
 
-
 		// Output Methods
 			std::string toString() const;
 			void debugPrint();
@@ -126,15 +136,6 @@ class OmegaInt
 			template < typename T > OmegaInt operator / (T num) const;
 			template < typename T > void operator += (T num);
 			template < typename T > void operator -= (T num);
-
-// Multiplicating by a power of 10
-	OmegaInt _e10(u64 power) const;
-// split the OmegaInt from a certain digit
-	OmegaInt _split_from(u64 split) const;
-// split the OmegaInt to a certain digit
-	OmegaInt _split_to(u64 split) const;
-	OmegaInt _karatsuba(OmegaInt const & other) const;
-
 };
 
 // Templated Methods
@@ -148,7 +149,8 @@ OmegaInt::OmegaInt(T foo)
 	catch(int e)
 	{ cout << "Incorrect constructor, for pointer types the correct constructor is OmegaInt(u64 fields, u64* nums, bool pos);"; }
 	isPOSITIVE = foo >= 0;
-	u64 num = std::is_unsigned<T>::value? foo : /*std::is_integral<T>::value? std::llabs(foo) :*/ std::fabs(foo);
+	u64 num = foo < 0? (foo * -1) : foo;
+	// u64 num = std::is_unsigned<T>::value? foo : std::is_integral<T>::value? std::llabs(foo) : std::fabs(foo);
 
 	TOTALFIELDS = num != 0? floor( (log10(num) )/ MAXDIGITS ) + 1 : 1;
 
@@ -156,7 +158,7 @@ OmegaInt::OmegaInt(T foo)
 	for (unsigned i = 0; i < TOTALFIELDS; ++i)
 	{
 		NUMBERS[i] = num % MAXFIELDVALUE;
-		num = (num - (num % MAXFIELDVALUE)) / MAXFIELDVALUE;
+		num = (num - ( num % MAXFIELDVALUE) ) / MAXFIELDVALUE;
 	}
 };
 
