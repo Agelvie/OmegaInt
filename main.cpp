@@ -93,6 +93,7 @@ void test(std::string message, bool pass)
 
 int main()
 {
+	cout << MAXFIELDVALUE << endl;
 	// OmegaInt X("12345678901234567890");
 	OmegaInt X("1234");
 	// cout << "X = " << X << endl;
@@ -176,12 +177,20 @@ int main()
 	
 	testC("1 Digit Multiplication", OmegaInt(2) * OmegaInt(2) == 4);
 
-	testC("5 Digit Multiplication", OmegaInt(12345) * OmegaInt(67890) == 838102050);
+	(OmegaInt(11538000) + OmegaInt(272205)).debugPrint();
+	cout << OmegaInt(11538000) + OmegaInt(272205) << '\t' << 11538000 + 272205 << endl;
+
+	testC("5 Digit Multiplication", OmegaInt(12345) * OmegaInt(6789) == 83810205);
 
 	testC("16 Digit Multiplication", OmegaInt("1092384710293847") * OmegaInt("1092384710293847") 
 																== "1193304355283772039845086059409");
 
-	cout << (OmegaInt("1092384710293847") * OmegaInt("1092384710293847")) << endl;
+
+	testC("64 Digit Multiplication", OmegaInt("3141592653589793238462643383279502884197169399375105820974944592") 
+								   * OmegaInt("2718281828459045235360287471352662497757247093699959574966967627") 
+== "8539734222673567065463550869546574495034888535765114961879601127067743044893204848617875072216249073013374895871952806582723184");
+
+	// cout << (OmegaInt("1092384710293847") * OmegaInt("1092384710293847")) << endl;
 
 	return 0;
 }

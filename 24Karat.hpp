@@ -15,7 +15,8 @@ typedef unsigned long long u64;
 // Maximum number of digits a field can have. (System depedent)
 // const unsigned MAXDIGITS = floor(std::numeric_limits<u64>::digits * log10(2) / 2);
 const unsigned MAXDIGITS = pow(10, floor(log10(std::numeric_limits<u64>::digits)));
-// const unsigned MAXDIGITS = 5; // for testing purposes
+// const unsigned MAXDIGITS = 4; // for testing purposes
+// const unsigned MAXDIGITS = 10; // for testing purposes
 
 // Maximum value that a field can have. (System depedent), values are strictly less than
 const u64 MAXFIELDVALUE = pow(10,MAXDIGITS);

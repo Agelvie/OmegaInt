@@ -244,13 +244,15 @@ OmegaInt OmegaInt::_add(OmegaInt const & other) const
 
 	unsigned min = A.fields() > B.fields()? B.fields() : A.fields();
 	unsigned Max = A.fields() > B.fields()? A.fields() : B.fields();
+
+	// cout << Max << ' ' << min << endl;
 	
 	OmegaInt RESULT( Max+1, true );
 
 	for (unsigned i = 0; i < min; ++i)
-		{ RESULT.set(i, A[i] + B[i]); }
+		{ /*cout << "min" << A[i] + B[i] << endl;*/ RESULT.set(i, A[i] + B[i]); }
 	for (unsigned i = min; i < Max; ++i)
-		{ RESULT.set(i, A.fields() > B.fields()? A[i] : B[i]); }
+		{ /*cout << "MAX" << endl;*/ RESULT.set(i, A.fields() > B.fields()? A[i] : B[i]); }
 
 	return RESULT;
 };
@@ -371,7 +373,7 @@ OmegaInt OmegaInt::_split_from(u64 split) const
 {
 	string temp = this->toString();
 	if (split > temp.size()){ split = temp.size(); }
-	temp = temp.substr(0, split);
+	temp = temp.substr(0, temp.size() - split);
 	return OmegaInt( temp.empty()? "0" : temp );
 }
 	// split the OmegaInt to a certain digit
@@ -379,7 +381,7 @@ OmegaInt OmegaInt::_split_to(u64 split) const
 {
 	string temp = this->toString();
 	if (split > temp.size()){ split = temp.size(); }
-	temp = temp.substr(split, temp.size());
+	temp = temp.substr(temp.size() - split, temp.size());
 	return OmegaInt( temp.empty()? "0" : temp );
 }
 	
@@ -397,17 +399,22 @@ OmegaInt OmegaInt::_karatsuba(OmegaInt const & other) const
 {
 	OmegaInt A = *this;
 	OmegaInt B = other;
-	
+	// cout << A << '\t' << B << endl;
 	if (A == 0 or B == 0){ return OmegaInt(0); }
 
-	if ( A < ALLOWED and B < ALLOWED and A.fields() == 1 and B.fields() == 1 )
+	if (A.digits() < 4 and B.digits() < 4 )
 	{
-		return OmegaInt( _Karat::karatsuba(A.NUMBERS[0], B.NUMBERS[0]) );
+		return A.NUMBERS[0] * B.NUMBERS[0];
 	}
+
+	// if ( A < ALLOWED and B < ALLOWED and A.fields() == 1 and B.fields() == 1 )
+	// {
+	// 	return OmegaInt( _Karat::karatsuba(A.NUMBERS[0], B.NUMBERS[0]) );
+	// }
 
 	// calculates the size of the numbers
 	// u64 m = std::max( A.fields(), B.fields() );
-	u64 m2 = std::min( A.digits(), B.digits() ) / 2;
+	u64 m2 = ceil((double)std::max( A.digits(), B.digits() ) / 2);
 	// u64 m2 = m/2;
 
 	// split the digit sequences in the middle
@@ -416,11 +423,26 @@ OmegaInt OmegaInt::_karatsuba(OmegaInt const & other) const
 	OmegaInt B_high = B._split_from (m2);
 	OmegaInt B_low  = B._split_to   (m2);
 
+	// cout << m2 << endl;
+	// cout << (A_high._e10(m2 )) << ' ' << (A_low) << 
+	// '\t' << (B_high._e10(m2 )) << ' ' << (B_low) << endl;
+
 	// 3 calls made to numbers approximately half the size
 	OmegaInt z0 = A_low._karatsuba( B_low );
 	OmegaInt z1 = ( A_low + A_high )._karatsuba( B_low + B_high );
 	OmegaInt z2 = A_high._karatsuba( B_high );
 
+	// cout << z2 << '\t' << (z2._e10(m2 * 2) ) << endl;
+	// cout << z1 << '\t' << z1 - z2 - z0 << '\t' << ( (z1 - z2 - z0)._e10(m2) ) << endl;
+	// cout << z0 << endl;
+
+	OmegaInt RESULT = (z2._e10(m2 * 2));
+	// cout << RESULT << endl;
+	RESULT += ( (z1 - z2 - z0)._e10(m2) );
+	// cout << RESULT << endl;
+	RESULT += z0;
+	// cout << RESULT << endl;
+	// return RESULT;
 	return (z2._e10(m2 * 2) ) + ( (z1 - z2 - z0)._e10(m2) ) + z0;
 }
 
@@ -519,7 +541,7 @@ void OmegaInt::_maintenance()
 	{
 		if ( NUMBERS[i] >= MAXFIELDVALUE )
 		{
-			NUMBERS[i] = 0;
+			NUMBERS[i] -= MAXFIELDVALUE;
 			
 			if( i + 1 < TOTALFIELDS )
 			{
