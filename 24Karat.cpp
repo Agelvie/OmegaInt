@@ -329,45 +329,6 @@ OmegaInt OmegaInt::operator - (OmegaInt const & other) const
 
 
 
-// /*
-
-struct _Karat
-{
-	u64 static digits(u64 A, u64 base){ return A == 0? 0 : floor( log( A ) / log(base) ) + 1; }
-
-	u64 static split_from(u64 A, u64 split)
-		{ return A / pow(10,split); }
-
-	u64 static split_to(u64 A, u64 split)
-		{ return A - (pow(10,split) * split_from( A, split )); }
-
-	u64 static karatsuba(u64 A, u64 B)
-	{
-		if (A == 0 or B == 0){ return 0; }
-
-		if ( digits(A,10) == 1 and digits(B,10) == 1 )
-			{ return A * B; }
-
-		// calculates the size of the numbers
-		u64 m = std::max( digits(A,10), digits(B,10) );
-		u64 m2 = m/2;
-
-
-		// split the digit sequences in the middle
-		u64 A_high = split_from (A, m2);
-		u64 A_low =  split_to   (A, m2);
-		u64 B_high = split_from (B, m2);
-		u64 B_low =  split_to   (B, m2);
-
-		// 3 calls made to numbers approximately half the size
-		u64 z0 = karatsuba( A_low, B_low );
-		u64 z1 = karatsuba( (A_low + A_high), (B_low + B_high) );
-		u64 z2 = karatsuba( A_high, B_high );
-
-		return (z2 * pow(10, (m2 * 2) ) ) + ( (z1 - z2 - z0) * pow(10, m2) ) + z0;
-	}
-};
-
 	// split the OmegaInt from a certain digit
 OmegaInt OmegaInt::_split_from(u64 split) const
 {
@@ -397,12 +358,14 @@ OmegaInt OmegaInt::_e10(u64 power) const
 
 OmegaInt OmegaInt::_karatsuba(OmegaInt const & other) const
 {
+	// static long i = 0;
+	// cout << i++ << endl;
 	OmegaInt A = *this;
 	OmegaInt B = other;
 	// cout << A << '\t' << B << endl;
 	if (A == 0 or B == 0){ return OmegaInt(0); }
 
-	if (A.digits() < 4 and B.digits() < 4 )
+	if (A.digits() < ALLOWED and B.digits() < ALLOWED )
 	{
 		return A.NUMBERS[0] * B.NUMBERS[0];
 	}
@@ -445,8 +408,6 @@ OmegaInt OmegaInt::_karatsuba(OmegaInt const & other) const
 	// return RESULT;
 	return (z2._e10(m2 * 2) ) + ( (z1 - z2 - z0)._e10(m2) ) + z0;
 }
-
-// */
 
 OmegaInt OmegaInt::operator * (OmegaInt const & other) const
 {
