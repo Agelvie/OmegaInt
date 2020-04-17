@@ -125,6 +125,7 @@ class OmegaInt
 			void print();
 			friend std::ostream& operator<<(std::ostream & os, const OmegaInt & A);
 
+
 		// Templated Methods
 			template < typename T> OmegaInt(T foo);
 			template < typename T> OmegaInt const & operator = (T num);
@@ -136,6 +137,10 @@ class OmegaInt
 			template < typename T > OmegaInt operator / (T num) const;
 			template < typename T > void operator += (T num);
 			template < typename T > void operator -= (T num);
+			template < typename T > friend OmegaInt operator + ( const T& y, OmegaInt x) { return OmegaInt(y) + x; }
+			template < typename T > friend OmegaInt operator - ( const T& y, OmegaInt x) { return OmegaInt(y) - x; }
+			template < typename T > friend OmegaInt operator * ( const T& y, OmegaInt x) { return OmegaInt(y) * x; }
+			template < typename T > friend OmegaInt operator / ( const T& y, OmegaInt x) { return OmegaInt(y) / x; }
 };
 
 // Templated Methods

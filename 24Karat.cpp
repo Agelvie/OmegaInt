@@ -4,7 +4,8 @@ void bug()
 	static unsigned i = 0;
 	cout << i++;_
 }
-	//@TODO -- implement /
+	//@TODO -- implement / and %
+	//@TODO -- add an append method, maybe push_front and also push_back
 
 	// Empty
 OmegaInt::OmegaInt()
@@ -295,8 +296,8 @@ OmegaInt OmegaInt::operator + (OmegaInt const & other) const
 	OmegaInt RESULT;
 
 	if      (  this->sing() and  other.sing() )  { RESULT = this->_add(other); }
-	else if ( !this->sing() and  other.sing() )  { RESULT = other - *this; }
-	else if (  this->sing() and !other.sing() )  { RESULT = *this - other; }
+	else if ( !this->sing() and  other.sing() )  { RESULT = other._subtract(*this); }
+	else if (  this->sing() and !other.sing() )  { RESULT = this->_subtract(other); }
 	else /* ( !this->sing() and !other.sing() )*/{ RESULT = this->_add(other); RESULT.changeSing(); }
 
 	RESULT._maintenance();
@@ -403,7 +404,7 @@ OmegaInt OmegaInt::operator * (OmegaInt const & other) const
 };
 OmegaInt OmegaInt::operator / (OmegaInt const & other) const
 {
-
+	
 	return other;
 };
 
