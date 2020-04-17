@@ -24,9 +24,14 @@ const u64 MAXFIELDVALUE = pow( 10, MAXDIGITS );
 // Value al which it is safe to multiply two fields of an OmegaInt
 const u64 ALLOWED = (log10( sqrt(MAXFIELDVALUE) ) - 1);
 
+// Most singnificant bit of the fields
+inline u64 bitSize(){ u64 maxBit = 0, a = MAXFIELDVALUE; while ( a != 0 ) { maxBit++; a = 1 >> 1; } return maxBit; }
+const u64 MAXBIT = bitSize();
+
 using std::cout;
 using std::endl;
 using std::string;
+
 
 class OmegaInt
 {
@@ -57,6 +62,20 @@ class OmegaInt
 				OmegaInt _split_to(u64 split) const;
 			// Main algorithm
 				OmegaInt _karatsuba(OmegaInt const & other) const;
+
+		// Bitwise Operations
+			// Set the nth bit to 1
+				void _setBit(u64 n);
+			// Set the nth bit to 0
+				void _clearBit(u64 n);
+			// Flip the nth bit to 1
+				void _flipBit(u64 n);
+			// Returns the state of the nth bit
+				unsigned _checkBit(u64 n);
+			// Set the nth bit to 1
+				void _changeBit(u64 n, unsigned x);
+			// Returns the number of bits in the OmegaInt representation
+				u64 _numBits();
 
 	public:
 		// Construction and Deletion

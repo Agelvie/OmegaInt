@@ -8,53 +8,6 @@ typedef unsigned long long u64;
 using std::cout;
 using std::endl;
 
-void splitInt ( u64 num, u64 n, u64 &high, u64 &low )
-{
-	low = num; high = 0;
-
-	for (u64 i = 0; i < n; ++i)
-	{
-		num = num / 10;
-	}
-
-	high = num;
-
-	low  = low - ( high * (u64)exp( n * log(10) ) );
-}
-
-u64 karatsuba (u64 num1, u64 num2)
-{
-	u64 m, mHalf;
-	u64 high1, low1, high2, low2, z0, z1, z2;
-
-	if ( (num1 < 10) or (num2 < 10) )
-	{
-		return num1 * num2;
-	}
-
-	/* calculates the size of the numbers */
-	m = num2;
-	if (num1 < num2)
-	{
-		m = num1;
-	}
-
-	m = (u64)log10(m) + 1;
-	mHalf = floor(m/2);
-
-	/* split the digit sequences in the middle */
-	splitInt( num1, mHalf, high1, low1 );
-	splitInt( num2, mHalf, high2, low2 );
-
-	/* 3 calls made to numbers approximately half the size */
-	z0 = karatsuba( low1, low2 );
-	z1 = karatsuba( (low1 + high1), (low2 + high2) );
-	z2 = karatsuba( high1, high2 );
-
-	//					10 ^ (mHalf * 2)										10 ^ mHalf	
-	return ( z2 * (u64)exp( mHalf * 2 * log(10) ) ) + ( (z1 - z2 - z0) * (u64)exp( mHalf * log(10) ) ) + z0;
-}
-
 // template <typename T>
 // void displayEqual( OmegaInt &A, T value )
 // {}

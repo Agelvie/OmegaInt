@@ -6,6 +6,9 @@ void bug()
 }
 	//@TODO -- implement / and %
 	//@TODO -- add an append method, maybe push_front and also push_back
+	//@TODO -- implement bitwise operators
+	//@TODO -- implement GCD
+	//@TODO -- implement lcm
 
 	// Empty
 OmegaInt::OmegaInt()
@@ -404,7 +407,7 @@ OmegaInt OmegaInt::operator * (OmegaInt const & other) const
 };
 OmegaInt OmegaInt::operator / (OmegaInt const & other) const
 {
-	
+
 	return other;
 };
 
@@ -514,3 +517,51 @@ void OmegaInt::_maintenance()
 	// Ensure that the zero is represented has positive
 	if (TOTALFIELDS == 1 and NUMBERS[0] == 0){ isPOSITIVE = true; }
 };
+
+void OmegaInt::_setBit(u64 n)
+{
+	u64 index = n / MAXBIT;
+	n = (n % MAXBIT);
+	NUMBERS[index] = NUMBERS[index] | (1ULL << n);
+}
+
+void OmegaInt::_clearBit(u64 n)
+{
+	u64 index = n / MAXBIT;
+	n = (n % MAXBIT);
+	NUMBERS[index] = NUMBERS[index] & ~(1ULL << n);
+}
+
+void OmegaInt::_flipBit(u64 n)
+{
+	u64 index = n / MAXBIT;
+	n = (n % MAXBIT);
+	NUMBERS[index] = NUMBERS[index] ^ 1ULL << n;
+}
+
+unsigned OmegaInt::_checkBit(u64 n)
+{
+	u64 index = n / MAXBIT;
+	n = (n % MAXBIT);
+	return (NUMBERS[index] >> n) & 1U;
+}
+
+void OmegaInt::_changeBit(u64 n, unsigned x)
+{
+	u64 index = n / MAXBIT;
+	n = (n % MAXBIT);
+	NUMBERS[index] = (NUMBERS[index] & ~(1ULL << n)) | (x << n);
+}
+
+u64 OmegaInt::_numBits()
+{
+	u64 i = 0;
+	u64 A = NUMBERS[TOTALFIELDS - 1];
+	while(A > 0)
+	{
+		A = A >> 1;
+		i++;
+	}
+
+	return i + (MAXBIT * TOTALFIELDS);
+}
