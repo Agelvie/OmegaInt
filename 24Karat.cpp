@@ -97,17 +97,14 @@ OmegaInt::OmegaInt(OmegaInt const & other)
 OmegaInt::~OmegaInt(){ free(NUMBERS); NUMBERS = NULL; };
 
 	// Assingment Operator
-OmegaInt const & OmegaInt::operator = (OmegaInt const & other)
-{
-	if (this != &other) { _copy(other); }
-	return *this;
-};
+void OmegaInt::operator = (OmegaInt const & other)
+	{ if (this != &other) { _copy(other); } };
 
-OmegaInt const & OmegaInt::operator = (std::string num)
-	{ _copy(OmegaInt(num)); return *this; };
+void OmegaInt::operator = (std::string num)
+	{ _copy(OmegaInt(num)); };
 
-OmegaInt const & OmegaInt::operator = (char const* num)
-	{ _copy(OmegaInt(num)); return *this; };
+void OmegaInt::operator = (char const* num)
+	{ _copy(OmegaInt(num)); };
 
 	// Copy helper function
 void OmegaInt::_copy(OmegaInt const & other)
@@ -396,19 +393,87 @@ OmegaInt OmegaInt::_karatsuba(OmegaInt const & other) const
 OmegaInt OmegaInt::operator * (OmegaInt const & other) const
 {
 	OmegaInt RESULT;
-	OmegaInt A = this->abs();
-	OmegaInt B = other.abs();
-
-	/*// NAIVE IMPLEMENTATION while(B > 0){ RESULT += A; B -= 1; } */
+	const OmegaInt& A = *this;
+	const OmegaInt& B = other;
 
 	RESULT = A._karatsuba(B);
-	if ( this->sing() != other.sing() ){RESULT.changeSing();}
+	if ( this->sing() != other.sing() ){ RESULT.changeSing(); }
 	return RESULT;
 };
+
+u64 OmegaInt::_countTailZeros() const
+{
+	string A = this->toString();
+	u64 i = 0;
+	while( A[A.size()-i-1] == '0' ){ i++; }
+	return i;
+}
+
+OmegaInt OmegaInt::_removeTailZeros() const
+{
+	string A = this->toString();
+	while( A[A.size()-1] == '0' ){ A = A.substr(0, A.size() - 1); }
+	return OmegaInt(A);
+}
+
+OmegaInt OmegaInt::_longDiv(OmegaInt const & other, DivReturn ret) const
+{
+	OmegaInt N = *this;
+	OmegaInt D = other;
+
+	u64 tenMultiples = std::min( N._countTailZeros(), D._countTailZeros() );
+	if (tenMultiples > 0)
+		{ N = N.RemovefromBack( tenMultiples ); D = D.RemovefromBack( tenMultiples ); }
+
+	OmegaInt Q = 0, R = 0;
+
+	if (D == 0){ std::cout << "WARNING: Divition by Zero" << std::endl; return OmegaInt(); }
+
+	u64 total = N._numBits() - 1;
+
+	for (long i = total; i >= 0; --i)
+	{
+		R = R << 1;
+		// R = R * 2;
+		R = (R[0] % 2 == 0 and N._checkBit(i) == 0)? R :
+			(R[0] % 2 == 1 and N._checkBit(i) == 0)? R - 1 :
+			(R[0] % 2 == 0 and N._checkBit(i) == 1)? R + 1 :
+		  /*(R[0] % 2 == 1 and N._checkBit(i) == 1)?*/R;
+		// bug();
+
+		if (R >= D)
+		{
+			R -= D;
+			Q._setBit(i);
+		}
+		cout << Q << ' ' << R << endl;
+	}
+
+	if (ret == Quotient) { return Q; }
+	else				 { return R._e10(tenMultiples); }
+}
+
 OmegaInt OmegaInt::operator / (OmegaInt const & other) const
 {
+	OmegaInt RESULT;
+	const OmegaInt& A = *this;
+	const OmegaInt& B = other;
+	DivReturn ret = Quotient;
 
-	return other;
+	RESULT = A._longDiv(B, ret);
+	if ( this->sing() != other.sing() ){ RESULT.changeSing(); }
+	return RESULT;
+};
+
+OmegaInt OmegaInt::operator % (OmegaInt const & other) const
+{
+	OmegaInt RESULT;
+	const OmegaInt& A = *this;
+	const OmegaInt& B = other;
+	DivReturn ret = Reminder;
+
+	RESULT = A._longDiv(B, ret);
+	return RESULT;
 };
 
 // Abbreviated Operators
@@ -518,11 +583,41 @@ void OmegaInt::_maintenance()
 	if (TOTALFIELDS == 1 and NUMBERS[0] == 0){ isPOSITIVE = true; }
 };
 
+
+OmegaInt OmegaInt::eraseHeadDigits(u64 n) const
+{
+	string A = this->toString();
+	A = A.substr(n, A.size());
+	return OmegaInt(A);
+}
+
+OmegaInt OmegaInt::eraseTailDigits(u64 n) const
+{
+	string A = this->toString();
+	A = A.substr(0, A.size() - n);
+	return OmegaInt(A);
+}
+
+OmegaInt OmegaInt::prepend(u64 n) const
+{
+	string A = this->toString();
+	A = A.substr(n, A.size());
+	return OmegaInt(A);
+}
+
+OmegaInt OmegaInt::append(u64 n) const
+{
+	string A = this->toString();
+	A = A.substr(0, A.size() - n);
+	return OmegaInt(A);
+}
+
 void OmegaInt::_setBit(u64 n)
 {
 	u64 index = n / MAXBIT;
 	n = (n % MAXBIT);
 	NUMBERS[index] = NUMBERS[index] | (1ULL << n);
+	_maintenance();
 }
 
 void OmegaInt::_clearBit(u64 n)
@@ -530,6 +625,7 @@ void OmegaInt::_clearBit(u64 n)
 	u64 index = n / MAXBIT;
 	n = (n % MAXBIT);
 	NUMBERS[index] = NUMBERS[index] & ~(1ULL << n);
+	_maintenance();
 }
 
 void OmegaInt::_flipBit(u64 n)
@@ -537,13 +633,25 @@ void OmegaInt::_flipBit(u64 n)
 	u64 index = n / MAXBIT;
 	n = (n % MAXBIT);
 	NUMBERS[index] = NUMBERS[index] ^ 1ULL << n;
+	_maintenance();
 }
 
 unsigned OmegaInt::_checkBit(u64 n)
 {
-	u64 index = n / MAXBIT;
-	n = (n % MAXBIT);
-	return (NUMBERS[index] >> n) & 1U;
+	OmegaInt A = *this;
+	// u64 index = n / MAXBIT;
+	// n = (n % MAXBIT);
+	// return (NUMBERS[index] >> n) & 1U;
+	for (u64 i = 0; i < n; ++i)
+	{
+		for (u64 j = 0; j < A.TOTALFIELDS; ++j)
+		{
+			A.NUMBERS[j] /= 2;
+		}
+		A._maintenance();
+	}
+
+	return A.NUMBERS[0] % 2;
 }
 
 void OmegaInt::_changeBit(u64 n, unsigned x)
@@ -551,6 +659,7 @@ void OmegaInt::_changeBit(u64 n, unsigned x)
 	u64 index = n / MAXBIT;
 	n = (n % MAXBIT);
 	NUMBERS[index] = (NUMBERS[index] & ~(1ULL << n)) | (x << n);
+	_maintenance();
 }
 
 u64 OmegaInt::_numBits()
@@ -563,5 +672,22 @@ u64 OmegaInt::_numBits()
 		i++;
 	}
 
-	return i + (MAXBIT * TOTALFIELDS);
+	return i + (MAXBIT * (TOTALFIELDS - 1));
+}
+
+OmegaInt OmegaInt::operator << (u64 n)
+{
+	OmegaInt RESULT = *this;
+
+	for (u64 i = 0; i < n; ++i)
+	{
+		for (u64 j = 0; j < TOTALFIELDS; ++j)
+		{
+			RESULT.NUMBERS[j] = RESULT.NUMBERS[j] * 2;
+		}
+
+		RESULT._maintenance();
+	}
+
+	return RESULT;
 }

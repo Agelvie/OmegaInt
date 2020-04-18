@@ -25,13 +25,12 @@ const u64 MAXFIELDVALUE = pow( 10, MAXDIGITS );
 const u64 ALLOWED = (log10( sqrt(MAXFIELDVALUE) ) - 1);
 
 // Most singnificant bit of the fields
-inline u64 bitSize(){ u64 maxBit = 0, a = MAXFIELDVALUE; while ( a != 0 ) { maxBit++; a = 1 >> 1; } return maxBit; }
+inline u64 bitSize(){ u64 maxBit = 0, a = MAXFIELDVALUE; while ( a != 0 ) { maxBit++; a = a >> 1; } return maxBit; }
 const u64 MAXBIT = bitSize();
 
 using std::cout;
 using std::endl;
 using std::string;
-
 
 class OmegaInt
 {
@@ -63,21 +62,28 @@ class OmegaInt
 			// Main algorithm
 				OmegaInt _karatsuba(OmegaInt const & other) const;
 
+		// Divition Helper Functions
+				enum DivReturn { Quotient, Reminder };
+				OmegaInt _removeTailZeros() const;
+				u64 _countTailZeros() const;
+				OmegaInt _longDiv(OmegaInt const & other, DivReturn ret) const;
+
 		// Bitwise Operations
-			// Set the nth bit to 1
-				void _setBit(u64 n);
-			// Set the nth bit to 0
-				void _clearBit(u64 n);
-			// Flip the nth bit to 1
-				void _flipBit(u64 n);
-			// Returns the state of the nth bit
-				unsigned _checkBit(u64 n);
-			// Set the nth bit to 1
-				void _changeBit(u64 n, unsigned x);
-			// Returns the number of bits in the OmegaInt representation
-				u64 _numBits();
+			// // // Set the nth bit to 1
+			// 	void _setBit(u64 n);
+			// // // Set the nth bit to 0
+			// 	void _clearBit(u64 n);
+			// // // Flip the nth bit to 1
+			// 	void _flipBit(u64 n);
+			// // // Returns the state of the nth bit
+			// 	unsigned _checkBit(u64 n);
+			// // // Set the nth bit to 1
+			// 	void _changeBit(u64 n, unsigned x);
+			// // // Returns the number of bits in the OmegaInt representation
+			// 	u64 _numBits();
 
 	public:
+		
 		// Construction and Deletion
 			// Empty
 			OmegaInt();
@@ -112,10 +118,18 @@ class OmegaInt
 			// set field 'i' to a value
 			void set (const unsigned i, u64 value);
 			// Assingment Operator
-				OmegaInt const & operator = (OmegaInt const & other);
-				OmegaInt const & operator = (std::string num);
-				OmegaInt const & operator = (char const* num);
+				void operator = (OmegaInt const & other);
+				void operator = (std::string num);
+				void operator = (char const* num);
 
+			// Remove Digits from the front of the number
+				void eraseHeadDigits(u64 n);
+			// Remove Digits from the back of the number
+				void eraseTailDigits(u64 n);
+			// Remove Digits from the front of the number
+				template < typename T > void prepend(T n);
+			// Remove Digits from the back of the number
+				template < typename T > void append(T n);
 
 		// Getter
 			u64 operator [] (const unsigned i) const;
@@ -133,6 +147,7 @@ class OmegaInt
 			OmegaInt operator -  (OmegaInt const & other) const;
 			OmegaInt operator *  (OmegaInt const & other) const;
 			OmegaInt operator /  (OmegaInt const & other) const;
+			OmegaInt operator %  (OmegaInt const & other) const;
 			void     operator += (OmegaInt const & other);
 			void     operator -= (OmegaInt const & other);
 			void     operator ++ ();
@@ -146,8 +161,8 @@ class OmegaInt
 
 
 		// Templated Methods
-			template < typename T> OmegaInt(T foo);
-			template < typename T> OmegaInt const & operator = (T num);
+			template < typename T > OmegaInt(T foo);
+			template < typename T > OmegaInt const & operator = (T num);
 			template < typename T > bool operator == (T const num) const;
 			template < typename T > bool operator >  (T num) const;
 			template < typename T > OmegaInt operator + (T num) const;
@@ -160,6 +175,12 @@ class OmegaInt
 			template < typename T > friend OmegaInt operator - ( const T& y, OmegaInt x) { return OmegaInt(y) - x; }
 			template < typename T > friend OmegaInt operator * ( const T& y, OmegaInt x) { return OmegaInt(y) * x; }
 			template < typename T > friend OmegaInt operator / ( const T& y, OmegaInt x) { return OmegaInt(y) / x; }
+			template < typename T > friend OmegaInt operator ==( const T& y, OmegaInt x) { return OmegaInt(y) == x; }
+			template < typename T > friend OmegaInt operator !=( const T& y, OmegaInt x) { return OmegaInt(y) != x; }
+			template < typename T > friend OmegaInt operator < ( const T& y, OmegaInt x) { return OmegaInt(y) < x; }
+			template < typename T > friend OmegaInt operator <=( const T& y, OmegaInt x) { return OmegaInt(y) <= x; }
+			template < typename T > friend OmegaInt operator > ( const T& y, OmegaInt x) { return OmegaInt(y) > x; }
+			template < typename T > friend OmegaInt operator >=( const T& y, OmegaInt x) { return OmegaInt(y) >= x; }
 };
 
 // Templated Methods
@@ -220,3 +241,19 @@ void OmegaInt::operator += (T num) { *this += (OmegaInt(num)); }
 
 template < typename T >
 void OmegaInt::operator -= (T num) { *this -= (OmegaInt(num)); }
+
+template < typename T >
+void OmegaInt::prepend(T n)
+{
+	std::istringstream ss;
+	ss << n << this->toString();
+	*this = OmegaInt(ss.str());
+}
+
+template < typename T >
+void OmegaInt::append(T n)
+{
+	std::istringstream ss;
+	ss << (this->toString()) << n;
+	*this = OmegaInt(ss.str());
+}
