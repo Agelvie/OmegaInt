@@ -13,15 +13,16 @@
 typedef unsigned long long u64;
 
 // Maximum number of digits a field can have. (System depedent)
-const unsigned MAXDIGITS = floor( log10(std::numeric_limits<u64>::max()) - 1 );
+// const unsigned MAXDIGITS = floor( log10(std::numeric_limits<u64>::max()) - 1 );
 // const unsigned MAXDIGITS = 2; // for testing purposes
 // const unsigned MAXDIGITS = 4; // for testing purposes
-// const unsigned MAXDIGITS = 10; // for testing purposes
+const unsigned MAXDIGITS = 10; // for testing purposes
+// const unsigned MAXDIGITS = 18; // for testing purposes
 
 // Maximum value that a field can have. (System depedent), values are strictly less than
 const u64 MAXFIELDVALUE = pow( 10, MAXDIGITS );
 
-// Value al which it is safe to multiply two fields of an OmegaInt
+// Number of digits al which it is safe to multiply two fields of an OmegaInt
 const u64 ALLOWED = (log10( sqrt(MAXFIELDVALUE) ) - 1);
 
 // Most singnificant bit of the fields
@@ -62,25 +63,11 @@ class OmegaInt
 			// Main algorithm
 				OmegaInt _karatsuba(OmegaInt const & other) const;
 
-		// Divition Helper Functions
+		// Division Helper Functions
 				enum DivReturn { Quotient, Reminder };
 				OmegaInt _removeTailZeros() const;
 				u64 _countTailZeros() const;
 				OmegaInt _longDiv(OmegaInt const & other, DivReturn ret) const;
-
-		// Bitwise Operations
-			// // // Set the nth bit to 1
-			// 	void _setBit(u64 n);
-			// // // Set the nth bit to 0
-			// 	void _clearBit(u64 n);
-			// // // Flip the nth bit to 1
-			// 	void _flipBit(u64 n);
-			// // // Returns the state of the nth bit
-			// 	unsigned _checkBit(u64 n);
-			// // // Set the nth bit to 1
-			// 	void _changeBit(u64 n, unsigned x);
-			// // // Returns the number of bits in the OmegaInt representation
-			// 	u64 _numBits();
 
 	public:
 		
@@ -152,6 +139,8 @@ class OmegaInt
 			void     operator -= (OmegaInt const & other);
 			void     operator ++ ();
 			void     operator -- ();
+			void     operator << (u64 n);
+			void     operator >> (u64 n);
 
 		// Output Methods
 			std::string toString() const;
@@ -245,7 +234,7 @@ void OmegaInt::operator -= (T num) { *this -= (OmegaInt(num)); }
 template < typename T >
 void OmegaInt::prepend(T n)
 {
-	std::istringstream ss;
+	std::ostringstream ss;
 	ss << n << this->toString();
 	*this = OmegaInt(ss.str());
 }
@@ -253,7 +242,7 @@ void OmegaInt::prepend(T n)
 template < typename T >
 void OmegaInt::append(T n)
 {
-	std::istringstream ss;
-	ss << (this->toString()) << n;
+	std::ostringstream ss;
+	ss << this->toString() << n;
 	*this = OmegaInt(ss.str());
 }

@@ -63,14 +63,12 @@ int main()
 	OmegaInt A(0);
 	// cout << "A = " << A << endl;
 
+/*
 	A = 1;
-	// cout << "A = " << A << endl;
 	testC("Int Assignation '='", A == 1);
 
 	A = "0002";
-	// cout << "A = " << A << endl;
 	testC("String Assignation (with removal of leading zeros) '='", A == 2);
-
 	testC("Equal Int'=='", A == 2);
 
 	testC("Equal String'=='", A == "2");
@@ -123,7 +121,7 @@ int main()
 
 	testC("String Consrtuctor with 0 -> OmegaInt(\"0\") ", OmegaInt("0") == 0);
 
-	// for (int i = 0; i < 7; ++i)
+*/	// for (int i = 0; i < 7; ++i)
 	// {
 	// 	cout << OmegaInt(1234)._split_from(i) << '\t' << OmegaInt(1234)._split_to(i) << endl;
 	// }
@@ -154,6 +152,7 @@ int main()
 // * OmegaInt("27182818284590452353602829837409234659812834692837659238476574713526624977534972470345936999595749669676271238410298409234875923831415926535897932384626433832795028842837491328478321971987369399375105820974944592") 
 // == "738905609893065022723040306338812103403690869683176224646524075329403239381000705130240528793667901575103384514255161480205215799687383613757095682703930175950904351659328420371856756618493649480324118217553822251088493797632925153114551664381475270521027369906603232527693994952884709313387584104310591674284595556118512001880922214682100257256821788916821002367137392684790030227970848898031312651967598223967837470046464");
 
+/*
 testC("Addition '+' ++", (OmegaInt(27) + OmegaInt(7)) == 34 );
 testC("Addition '+' +-", (OmegaInt(27) + OmegaInt(-7)) == 20 );
 testC("Addition '+' -+", (OmegaInt(-27) + OmegaInt(7)) == -20 );
@@ -168,27 +167,33 @@ testC("Consrtuctor: Templated", OmegaInt(-12) == -12);
 testC("Friend Operators (int)", -12 + OmegaInt(-4) == -16);
 testC("Friend Operators (int)", -12 + OmegaInt(4) == -8);
 testC("Friend Operators (string)", "-12" + OmegaInt(4) == -8);
+*/
 
 // cout << OmegaInt(10) / OmegaInt(2) << endl;
 // testC("Divition Operator '/' ",  OmegaInt(10) / OmegaInt(2) == 5);
 
 // testC("Divition Operator Removing Tail zeros '/' ",  OmegaInt(10000000000) / OmegaInt(2000000000) == 5);
 
-// testC("Divition Operator 8 Digits '/' ",  OmegaInt("12345678") / OmegaInt("12345") == "10004");
+// testC("Divition Operator 8 Digits '/' ",  OmegaInt("12345678") / OmegaInt("12345") == "1000");
 
-// testC("Divition Operator 14 Digits '/' ",  OmegaInt("33698323079548") / OmegaInt("398457209") == "398457209");
+testC("Divition Operator 14 Digits '/' ",  OmegaInt("33698323079548") / OmegaInt("398457209") == "84572");
 
 // cout <<	OmegaInt(1823934593) / OmegaInt(9983204) << endl;
 
 // cout << OmegaInt("1193304355283772039") / OmegaInt("10923847102") << endl;
-// cout << OmegaInt("1193304355283772039") % OmegaInt("10923847102") << endl;
+cout << OmegaInt("1193304355283772039") % OmegaInt("10923847102") << endl;
 
 // cout << OmegaInt("1193304355283772039845086059409") % OmegaInt("1092384710293847") << endl;
-cout << OmegaInt("1193304355283772039845086059409") / OmegaInt("1092384710293847") << endl;
-// testC("Divition Operator 16 Digits '/' ",  OmegaInt("1193304355283772039845086059409") / OmegaInt("1092384710293847") == "1092384710293847");
-	// 1259433823801388
+// cout << OmegaInt("1193304355283772039845086059409") / OmegaInt("1092384710293847") << endl;
+testC("Divition Operator 16 Digits '/' ",  OmegaInt("1193304355283772039845086059409") / OmegaInt("1092384710293847") == "1092384710293847");
 
-// testC("Reminder Operator '%' ",  OmegaInt(11) % OmegaInt(2) == 1);
+testC("Divition Operator 16 Digits '/' ",  OmegaInt("5671245623433698323079548") / OmegaInt("1092384710293847") == "5191619371");
+testC("Divition Operator 16 Digits '/' ",  OmegaInt("5671245623433698323079548") / OmegaInt("1092384710293847") == "5191619371");
+
+
+testC("Divition Operator Single word denominator '/' ",  OmegaInt("56712456234336983") / OmegaInt("134") == "423227285330873");
+
+testC("Reminder Operator '%' ",  OmegaInt(11) % OmegaInt(2) == 1);
 
 
 	return 0;
