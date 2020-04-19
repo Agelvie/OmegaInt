@@ -390,8 +390,8 @@ OmegaInt OmegaInt::_karatsuba(OmegaInt const & other) const
 OmegaInt OmegaInt::operator * (OmegaInt const & other) const
 {
 	OmegaInt RESULT;
-	const OmegaInt& A = *this;
-	const OmegaInt& B = other;
+	const OmegaInt A = this->abs();
+	const OmegaInt B = other.abs();
 
 	RESULT = A._karatsuba(B);
 	if ( this->sing() != other.sing() ){ RESULT.changeSing(); }
