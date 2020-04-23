@@ -105,18 +105,18 @@ class OmegaInt
 			// set field 'i' to a value
 			void set (const unsigned i, u64 value);
 			// Assingment Operator
-				void operator = (OmegaInt const & other);
-				void operator = (std::string num);
-				void operator = (char const* num);
+			void operator = (OmegaInt const & other);
+			void operator = (std::string num);
+			void operator = (char const* num);
 
 			// Remove Digits from the front of the number
-				void eraseHeadDigits(u64 n);
+			void eraseHeadDigits(u64 n);
 			// Remove Digits from the back of the number
-				void eraseTailDigits(u64 n);
+			void eraseTailDigits(u64 n);
 			// Remove Digits from the front of the number
-				template < typename T > void prepend(T n);
+			template < typename T > void prepend(T n);
 			// Remove Digits from the back of the number
-				template < typename T > void append(T n);
+			template < typename T > void append(T n);
 
 		// Getter
 			u64 operator [] (const unsigned i) const;
@@ -173,7 +173,7 @@ class OmegaInt
 };
 
 // Templated Methods
-template < typename T>
+template < typename T >
 OmegaInt::OmegaInt(T foo)
 {
 	try
@@ -196,7 +196,7 @@ OmegaInt::OmegaInt(T foo)
 	}
 };
 
-template < typename T>
+template < typename T >
 OmegaInt const & OmegaInt::operator = (T num)
 {
 	// If it is not a numerical type return an empty OmegaInt
