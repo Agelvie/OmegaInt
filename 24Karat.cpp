@@ -136,6 +136,16 @@ u64 OmegaInt::digits() const
 	return this->isPOSITIVE? (this->toString()).size() : (this->toString()).size()-1;
 }
 
+bool OmegaInt::even () const
+{
+	return 0 == NUMBERS[0] % 2;
+}
+
+bool OmegaInt::odd () const
+{
+	return 0 != NUMBERS[0] % 2;
+}
+
 // Setter
 	// Changes the sing of the OmegaInt
 void OmegaInt::changeSing(){ isPOSITIVE = !isPOSITIVE; };
@@ -397,6 +407,21 @@ OmegaInt OmegaInt::operator * (OmegaInt const & other) const
 	if ( this->sing() != other.sing() ){ RESULT.changeSing(); }
 	return RESULT;
 };
+
+OmegaInt OmegaInt::operator ^  (OmegaInt const & other) const
+{
+	const OmegaInt& A = *this;
+	const OmegaInt& B = other;
+	OmegaInt RESULT = 1;
+
+	// this is somewhat naive
+	for (OmegaInt i = 0; i < B; ++i)
+	{
+		RESULT = RESULT * A;
+	}
+
+	return RESULT;
+}
 
 u64 OmegaInt::_countTailZeros() const
 {

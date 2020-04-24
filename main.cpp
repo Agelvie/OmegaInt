@@ -2,15 +2,12 @@
 #include <cmath>
 #include <limits>
 #include "24Karat.hpp"
+#include "OmegaUtils.hpp"
 
 // #define _ cin.get();
 typedef unsigned long long u64;
 using std::cout;
 using std::endl;
-
-// template <typename T>
-// void displayEqual( OmegaInt &A, T value )
-// {}
 
 void testC(std::string message, bool pass)
 {
@@ -18,28 +15,6 @@ void testC(std::string message, bool pass)
 	cout << (pass? "\033[1;32mPASS\033[0m" : "\033[1;31mFAIL\033[0m");
 	cout << "\tTEST " << i++ << ": " << message << endl;
 }
-
-void testC_Right(std::string message, bool pass)
-{
-	static unsigned i = 0;
-	static int width = 80;
-
-	std::ostringstream ss;
-
-	ss << "TEST " << i++ << ": " << message << ' ';
-	cout << ss.str();
-
-	for (int i = 0; i < (int)(width - ss.str().size()); ++i)
-		{ cout << '_'; }
-	cout << (pass? "\033[1;32mPASS\033[0m" : "\033[1;31mFAIL\033[0m") << endl;
-}
-
-void test(std::string message, bool pass)
-{
-	static unsigned i = 0;
-	cout << "TEST " << i++ << ":\t" << message << '\t';
-	cout << (pass? "PASS" : "FAIL") << endl;
-};
 
 bool compare(string A, string B)
 {
@@ -58,6 +33,7 @@ int main(int argc, char const *argv[])
 	cout << "MAXDIGITS: " << MAXDIGITS << endl;
 	cout << "MAXFIELDVALUE: " << MAXFIELDVALUE << endl;
 	cout << "ALLOWED: " << ALLOWED << endl;
+	cout << "ARGC: " << argc << endl;
 
 	// OmegaInt X("12345678901234567890");
 	OmegaInt X("1234");
@@ -74,7 +50,7 @@ int main(int argc, char const *argv[])
 
 	for (int i = 1; i < argc; ++i)
 	{
-		if ( compare(argv[i],"=") or argc == 1)
+		if (compare(argv[i],"=") or argc == 1)
 		{
 			A = 1;
 			testC("Int Assignation '='", A == 1);
@@ -143,7 +119,9 @@ int main(int argc, char const *argv[])
 			testC( "212 Digit Multiplication", OmegaInt("27182818284590452353602829837409234659812834692837659238476574713526624977534972470345936999595749669676271238410298409234875923831415926535897932384626433832795028842837491328478321971987369399375105820974944592") 
 												* OmegaInt("27182818284590452353602829837409234659812834692837659238476574713526624977534972470345936999595749669676271238410298409234875923831415926535897932384626433832795028842837491328478321971987369399375105820974944592") 
 											== "738905609893065022723040306338812103403690869683176224646524075329403239381000705130240528793667901575103384514255161480205215799687383613757095682703930175950904351659328420371856756618493649480324118217553822251088493797632925153114551664381475270521027369906603232527693994952884709313387584104310591674284595556118512001880922214682100257256821788916821002367137392684790030227970848898031312651967598223967837470046464");
-	
+
+			testC( "Power Operator ^" , (OmegaInt(3)^OmegaInt(3)) == 27 );
+			testC( "Power Operator ^" , (OmegaInt(12)^OmegaInt(12)) == "8916100448256" );
 		}
 
 		if (compare(argv[i],"/") or argc == 1)
@@ -169,6 +147,7 @@ int main(int argc, char const *argv[])
 																	/ OmegaInt("134") == "423227285330873");
 
 			testC("Reminder Operator '%' ",  OmegaInt(11) % OmegaInt(2) == 1);
+			// testC("Reminder Operator '%' ",  OmegaInt(-11) % OmegaInt(2) == 1);
 		}
 
 		if (compare(argv[i],"utils") or argc == 1)
@@ -187,9 +166,28 @@ int main(int argc, char const *argv[])
 			testC("Friend Operators (int)", -12 + OmegaInt(-4) == -16);
 			testC("Friend Operators (int)", -12 + OmegaInt(4) == -8);
 			testC("Friend Operators (string)", "-12" + OmegaInt(4) == -8);
+
+			testC("Is even?", OmegaInt("123456789012345678901234567890").even());
+			testC("Is odd?", !( OmegaInt("123456789012345678901234567890").odd() ));
+			A = "123456789012345678901234567890120394872403976418273468746592853476";
+			testC("Is odd/even LARGE value", A.odd() != A.even() );
+			A = "-1";
+			testC("Is odd/even small value", A.odd() != A.even() );
+
+
+			testC("GCD", OmegaUtils::GCD( 10, 5) == 5 );
+			testC("GCD", OmegaUtils::GCD( 19231*5, 19237*5) == 5 );
+			testC("GCD", OmegaUtils::GCD( 253209919*5, 253209923*5) == 5 );
+			testC("GCD", OmegaUtils::GCD( 9012983, 2389470 ) == 1 );
+
+			testC("lcm", OmegaUtils::lcm( 12, 15 ) == 60 );
+			testC("lcm", OmegaUtils::lcm( 9012983, 2389470 ) == 21536252489010 );
+			X = "70293487502938475023984750239876";
+			Y = "23984787216548758649586932847653";
+			A = OmegaUtils::GCD(X,Y);
+			testC("lcm LARGE", OmegaUtils::lcm( X, Y ) == (X * Y) / A );
 			
 			// testC("Test e10^i function", OmegaInt(1234)._e10(3) == 1234000);
-
 			// testC("Test _split_from(i)", OmegaInt(12345)._split_from(2) == 123);
 			// testC("Test _split_to(i)", OmegaInt(12345)._split_to(2) == 45);
 
@@ -207,3 +205,26 @@ int main(int argc, char const *argv[])
 
 	return 0;
 }
+
+
+void testC_Right(std::string message, bool pass)
+{
+	static unsigned i = 0;
+	static int width = 80;
+
+	std::ostringstream ss;
+
+	ss << "TEST " << i++ << ": " << message << ' ';
+	cout << ss.str();
+
+	for (int i = 0; i < (int)(width - ss.str().size()); ++i)
+		{ cout << '_'; }
+	cout << (pass? "\033[1;32mPASS\033[0m" : "\033[1;31mFAIL\033[0m") << endl;
+}
+
+void test(std::string message, bool pass)
+{
+	static unsigned i = 0;
+	cout << "TEST " << i++ << ":\t" << message << '\t';
+	cout << (pass? "PASS" : "FAIL") << endl;
+};

@@ -98,6 +98,12 @@ class OmegaInt
 			OmegaInt abs() const;
 			// Returns the number of digits
 			u64 digits() const;
+			// Returns the value of the ith field, no boundary check
+			u64 operator [] (const unsigned i) const;
+			// Returns true if the value is even
+			bool even () const;
+			// Returns true if the value is odd
+			bool odd () const;
 
 		// Setters
 			// Changes the sing of the OmegaInt
@@ -118,9 +124,6 @@ class OmegaInt
 			// Remove Digits from the back of the number
 			template < typename T > void append(T n);
 
-		// Getter
-			u64 operator [] (const unsigned i) const;
-
 		// Comparison Operators
 			bool operator == (OmegaInt const &other) const;
 			bool operator != (OmegaInt const &other) const;
@@ -130,11 +133,12 @@ class OmegaInt
 			bool operator <  (OmegaInt const &other) const;
 
 		// Arithmetic Operators
-			OmegaInt operator +  (OmegaInt const & other) const;
-			OmegaInt operator -  (OmegaInt const & other) const;
-			OmegaInt operator *  (OmegaInt const & other) const;
-			OmegaInt operator /  (OmegaInt const & other) const;
-			OmegaInt operator %  (OmegaInt const & other) const;
+			OmegaInt operator +  (OmegaInt const & other) const; // Add
+			OmegaInt operator -  (OmegaInt const & other) const; // Substraction
+			OmegaInt operator *  (OmegaInt const & other) const; // Multiplication
+			OmegaInt operator /  (OmegaInt const & other) const; // Division
+			OmegaInt operator %  (OmegaInt const & other) const; // Modulo
+			OmegaInt operator ^  (OmegaInt const & other) const; // Power
 			void     operator += (OmegaInt const & other);
 			void     operator -= (OmegaInt const & other);
 			void     operator ++ ();
@@ -152,18 +156,20 @@ class OmegaInt
 		// Templated Methods
 			template < typename T > OmegaInt(T foo);
 			template < typename T > OmegaInt const & operator = (T num);
-			template < typename T > bool operator == (T const num) const;
-			template < typename T > bool operator >  (T num) const;
+			template < typename T > bool     operator == (T const num) const;
+			template < typename T > bool     operator >  (T num) const;
 			template < typename T > OmegaInt operator + (T num) const;
 			template < typename T > OmegaInt operator - (T num) const;
 			template < typename T > OmegaInt operator * (T num) const;
 			template < typename T > OmegaInt operator / (T num) const;
-			template < typename T > void operator += (T num);
-			template < typename T > void operator -= (T num);
+			template < typename T > OmegaInt operator ^ (T num) const;
+			template < typename T > void     operator += (T num);
+			template < typename T > void     operator -= (T num);
 			template < typename T > friend OmegaInt operator + ( const T& y, OmegaInt x) { return OmegaInt(y) + x; }
 			template < typename T > friend OmegaInt operator - ( const T& y, OmegaInt x) { return OmegaInt(y) - x; }
 			template < typename T > friend OmegaInt operator * ( const T& y, OmegaInt x) { return OmegaInt(y) * x; }
 			template < typename T > friend OmegaInt operator / ( const T& y, OmegaInt x) { return OmegaInt(y) / x; }
+			template < typename T > friend OmegaInt operator ^ ( const T& y, OmegaInt x) { return OmegaInt(y) ^ x; }
 			template < typename T > friend OmegaInt operator ==( const T& y, OmegaInt x) { return OmegaInt(y) == x; }
 			template < typename T > friend OmegaInt operator !=( const T& y, OmegaInt x) { return OmegaInt(y) != x; }
 			template < typename T > friend OmegaInt operator < ( const T& y, OmegaInt x) { return OmegaInt(y) < x; }
@@ -224,6 +230,9 @@ OmegaInt OmegaInt::operator * (T num) const { return *this * (OmegaInt(num)); }
 
 template < typename T >
 OmegaInt OmegaInt::operator / (T num) const { return *this / (OmegaInt(num)); }
+
+template < typename T >
+OmegaInt OmegaInt::operator ^ (T num) const { return *this ^ OmegaInt(num); }
 
 template < typename T >
 void OmegaInt::operator += (T num) { *this += (OmegaInt(num)); }
