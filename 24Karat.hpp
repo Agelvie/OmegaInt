@@ -125,12 +125,12 @@ class OmegaInt
 			template < typename T > void append(T n);
 
 		// Comparison Operators
-			bool operator == (OmegaInt const &other) const;
-			bool operator != (OmegaInt const &other) const;
-			bool operator >  (OmegaInt const &other) const;
-			bool operator >= (OmegaInt const &other) const;
-			bool operator <= (OmegaInt const &other) const;
-			bool operator <  (OmegaInt const &other) const;
+			bool operator == (OmegaInt const & other) const;
+			bool operator != (OmegaInt const & other) const;
+			bool operator >  (OmegaInt const & other) const;
+			bool operator >= (OmegaInt const & other) const;
+			bool operator <= (OmegaInt const & other) const;
+			bool operator <  (OmegaInt const & other) const;
 
 		// Arithmetic Operators
 			OmegaInt operator +  (OmegaInt const & other) const; // Add
@@ -157,12 +157,12 @@ class OmegaInt
 			template < typename T > OmegaInt(T foo);
 			template < typename T > OmegaInt const & operator = (T num);
 			template < typename T > bool     operator == (T const num) const;
-			template < typename T > bool     operator >  (T num) const;
-			template < typename T > OmegaInt operator + (T num) const;
-			template < typename T > OmegaInt operator - (T num) const;
-			template < typename T > OmegaInt operator * (T num) const;
-			template < typename T > OmegaInt operator / (T num) const;
-			template < typename T > OmegaInt operator ^ (T num) const;
+			template < typename T > bool     operator >  (T const num) const;
+			template < typename T > OmegaInt operator +  (T num) const;
+			template < typename T > OmegaInt operator -  (T num) const;
+			template < typename T > OmegaInt operator *  (T num) const;
+			template < typename T > OmegaInt operator /  (T num) const;
+			template < typename T > OmegaInt operator ^  (T num) const;
 			template < typename T > void     operator += (T num);
 			template < typename T > void     operator -= (T num);
 			template < typename T > friend OmegaInt operator + ( const T& y, OmegaInt x) { return OmegaInt(y) + x; }

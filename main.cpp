@@ -33,7 +33,6 @@ int main(int argc, char const *argv[])
 	cout << "MAXDIGITS: " << MAXDIGITS << endl;
 	cout << "MAXFIELDVALUE: " << MAXFIELDVALUE << endl;
 	cout << "ALLOWED: " << ALLOWED << endl;
-	cout << "ARGC: " << argc << endl;
 
 	// OmegaInt X("12345678901234567890");
 	OmegaInt X("1234");
@@ -48,9 +47,22 @@ int main(int argc, char const *argv[])
 	OmegaInt A(0);
 	// cout << "A = " << A << endl;
 
+	if (argc == 1 or compare(argv[1],"help"))
+	{
+		cout << "No parameters where given so no test will be run\nThe options are:\n";
+		cout << "\tall   -> run all tests\n";
+		cout << "\t+     -> run Addition test\n";
+		cout << "\t-     -> run Substraction test\n";
+		cout << "\tx     -> run Multiplication test\n";
+		cout << "\t/     -> run Division test\n";
+		cout << "\tutils -> run Utilities test\n";
+		cout << "\tbool  -> run Bool operations test\n";
+		cout << "\thelp  -> to see this menu\n";
+	}
+
 	for (int i = 1; i < argc; ++i)
 	{
-		if (compare(argv[i],"=") or argc == 1)
+		if ( compare(argv[i],"=") or compare(argv[1],"all"))
 		{
 			A = 1;
 			testC("Int Assignation '='", A == 1);
@@ -61,7 +73,7 @@ int main(int argc, char const *argv[])
 			testC("Equal String'=='", A == "2");
 		}
 
-		if (compare(argv[i],"+") or argc == 1)
+		if ( compare(argv[i],"+") or compare(argv[1],"all"))
 		{
 			A = X + Y;
 			testC("Addition '+'", A == (X + Y) );
@@ -75,7 +87,7 @@ int main(int argc, char const *argv[])
 			testC("Addition '+' --", (OmegaInt(-27) + OmegaInt(-7)) == -34 );
 		}
 
-		if (compare(argv[i],"-") or argc == 1)
+		if ( compare(argv[i],"-") or compare(argv[1],"all"))
 		{
 			A = 3; A -= 1;
 			testC("Operator -=", A == 2);
@@ -99,7 +111,7 @@ int main(int argc, char const *argv[])
 			testC("Subtraction '-' --", (OmegaInt(-27) - OmegaInt(-7)) == -20 );
 		}
 		
-		if (compare(argv[i],"x") or argc == 1)
+		if ( compare(argv[i],"x") or compare(argv[1],"all"))
 		{
 			testC("1 Digit Multiplication", OmegaInt(2) * OmegaInt(2) == 4);
 
@@ -124,7 +136,7 @@ int main(int argc, char const *argv[])
 			testC( "Power Operator ^" , (OmegaInt(12)^OmegaInt(12)) == "8916100448256" );
 		}
 
-		if (compare(argv[i],"/") or argc == 1)
+		if ( compare(argv[i],"/") or compare(argv[1],"all"))
 		{
 			testC("Divition Operator '/' ",  OmegaInt(10) / OmegaInt(2) == 5);
 
@@ -150,7 +162,7 @@ int main(int argc, char const *argv[])
 			// testC("Reminder Operator '%' ",  OmegaInt(-11) % OmegaInt(2) == 1);
 		}
 
-		if (compare(argv[i],"utils") or argc == 1)
+		if ( compare(argv[i],"utils") or compare(argv[1],"all"))
 		{
 			testC("String Consrtuctor with 0 -> OmegaInt(\"0\") ", OmegaInt("0") == 0);
 			A = OmegaInt(MAXFIELDVALUE - 1) + 1;
@@ -182,22 +194,42 @@ int main(int argc, char const *argv[])
 
 			testC("lcm", OmegaUtils::lcm( 12, 15 ) == 60 );
 			testC("lcm", OmegaUtils::lcm( 9012983, 2389470 ) == 21536252489010 );
+			
 			X = "70293487502938475023984750239876";
 			Y = "23984787216548758649586932847653";
-			A = OmegaUtils::GCD(X,Y);
-			testC("lcm LARGE", OmegaUtils::lcm( X, Y ) == (X * Y) / A );
-			
+			// A = OmegaUtils::GCD(X,Y);
+			// testC("lcm LARGE", OmegaUtils::lcm( X, Y ) == (X * Y) / A );
+
+			X = "10";
+			Y = "5";
+			testC("min", OmegaUtils::min( X, Y ) == Y );
+			testC("min", OmegaUtils::min( Y, X ) == Y );
+			testC("MAX", OmegaUtils::max( X, Y ) == X );
+			testC("MAX", OmegaUtils::max( Y, X ) == X );
+
 			// testC("Test e10^i function", OmegaInt(1234)._e10(3) == 1234000);
 			// testC("Test _split_from(i)", OmegaInt(12345)._split_from(2) == 123);
 			// testC("Test _split_to(i)", OmegaInt(12345)._split_to(2) == 45);
-
 		}
 
-		if (compare(argv[i],"bool") or argc == 1)
+		if ( compare(argv[i],"bool") or compare(argv[1],"all"))
 		{
-			testC("Operator >", OmegaInt(3) > OmegaInt(2));
-			testC("Operator ==", OmegaInt(3) == OmegaInt(3));
-			A = X > Y? X: Y;
+			testC("Operator > (unequal)", OmegaInt(3) > OmegaInt(2));
+			testC("Operator > (equal)", !(OmegaInt(3) > OmegaInt(3)));
+			testC("Operator > (less than)", !(OmegaInt(2) > OmegaInt(3)));
+
+			testC("Operator == (++)", OmegaInt(3) == OmegaInt(3));
+			testC("Operator == (--)", OmegaInt(-3) == OmegaInt(-3));
+			testC("Operator == (LARGE)", 
+				OmegaInt("01928346984375421764562384758123745894385395467") == 
+				OmegaInt("01928346984375421764562384758123745894385395467"));
+
+			
+			testC("Operator < (unequal)", OmegaInt(2) < OmegaInt(3));
+			testC("Operator < (equal)", !(OmegaInt(3) < OmegaInt(3)));
+			testC("Operator < (unequal (lager than))", !(OmegaInt(4) < OmegaInt(3)));
+
+			A = X > Y? X : Y;
 			testC("Test ternary operator '?'", A == X);
 		}
 

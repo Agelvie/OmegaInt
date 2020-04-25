@@ -8,4 +8,10 @@ namespace OmegaUtils
 		A = B;
 		B = X;
 	}
+
+	OmegaInt& min( OmegaInt &A, OmegaInt &B )
+		{ return A < B ? A : B; }
+
+	OmegaInt& max( OmegaInt &A, OmegaInt &B )
+		{ return A > B ? A : B; }
 }

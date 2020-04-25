@@ -4,8 +4,6 @@ void bug()
 	static unsigned i = 0;
 	cout << i++;_
 }
-	//@TODO -- implement GCD
-	//@TODO -- implement lcm
 
 	// Empty
 OmegaInt::OmegaInt()
@@ -233,11 +231,11 @@ bool OmegaInt::operator >= (const OmegaInt &other) const
 };
 bool OmegaInt::operator <  (const OmegaInt &other) const
 {
-	return !(*this == other) or (*this > other);
+	return !(*this == other) and !(*this > other);
 };
 bool OmegaInt::operator <= (const OmegaInt &other) const
 {
-	return (*this == other) or (*this < other);
+	return (*this == other) or (other > *this);
 };
 
 OmegaInt OmegaInt::_add(OmegaInt const & other) const

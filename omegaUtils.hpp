@@ -5,6 +5,8 @@
 namespace OmegaUtils
 {
 	void swap( OmegaInt &A, OmegaInt &B );
+	OmegaInt& min( OmegaInt &A, OmegaInt &B );
+	OmegaInt& max( OmegaInt &A, OmegaInt &B );
 	template < typename T, typename G > OmegaInt GCD ( T A, G B );
 	template < typename T, typename G > OmegaInt lcm ( T A, G B );
 }
