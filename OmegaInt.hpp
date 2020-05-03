@@ -40,7 +40,7 @@ class OmegaInt
 		// Number of pieces the number is split into
 			u64 TOTALFIELDS;
 		// Pieces that comprice the number
-			u64* NUMBERS = NULL;
+			u64* NUMBERS;
 		// Sing, is it positive?
 			bool isPOSITIVE;
 		// Copy function

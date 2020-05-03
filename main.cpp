@@ -2,8 +2,11 @@
 #include <cmath>
 #include <list>
 #include <limits>
+
 #include "OmegaInt.hpp"
 #include "OmegaUtils.hpp"
+
+// #include "SingleFile/OmegaInt.hpp"
 
 // #define _ cin.get();
 typedef unsigned long long u64;
@@ -39,17 +42,20 @@ int main(int argc, char const *argv[])
 	cout << "ALLOWED: " << ALLOWED << endl;
 
 	// OmegaInt X("12345678901234567890");
+	// OmegaInt X("1234");
 	OmegaInt X("1234");
 	// cout << "X = " << X << endl;
 
-	OmegaInt Y("456");
+	OmegaInt Y = "456";
 	// cout << "Y = "<< Y << endl;
 
 	OmegaInt Z("-986");
 	// cout << "Z = " << Z << endl;
 
-	OmegaInt A(0);
+	OmegaInt A = 0;
 	// cout << "A = " << A << endl;
+
+	X = A + A;
 
 	if (argc == 1 or compare(argv[1],"help"))
 	{
