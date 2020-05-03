@@ -1,5 +1,5 @@
 EXE = main
-OBJS = main.o 24Karat.o OmegaUtils.o
+OBJS = main.o OmegaInt.o OmegaUtils.o
 CLEAN_RM =
 
 include generic.mk

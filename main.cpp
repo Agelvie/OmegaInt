@@ -1,13 +1,17 @@
 #include <iostream>
 #include <cmath>
+#include <list>
 #include <limits>
-#include "24Karat.hpp"
+#include "OmegaInt.hpp"
 #include "OmegaUtils.hpp"
 
 // #define _ cin.get();
 typedef unsigned long long u64;
 using std::cout;
 using std::endl;
+
+// Idea: add a report at the end of all failed test, option to print only test that failed
+// std::list <std::string> errorReport; or a global stream to print at the end, like "err <<"
 
 void testC(std::string message, bool pass)
 {
@@ -202,7 +206,8 @@ int main(int argc, char const *argv[])
 
 			X = "10";
 			Y = "5";
-			testC("min", OmegaUtils::min( X, Y ) == Y );
+			// the std::min and max also work
+			testC("min", OmegaUtils::min( X, Y ) == Y ); 
 			testC("min", OmegaUtils::min( Y, X ) == Y );
 			testC("MAX", OmegaUtils::max( X, Y ) == X );
 			testC("MAX", OmegaUtils::max( Y, X ) == X );

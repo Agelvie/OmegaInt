@@ -1,4 +1,4 @@
-#include "24Karat.hpp"
+#include "OmegaInt.hpp"
 
 #pragma once
 
