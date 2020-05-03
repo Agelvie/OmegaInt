@@ -6,6 +6,7 @@
 #include <type_traits>
 #include <sstream>
 
+
 #pragma once
 
 #define _ std::cin.get();

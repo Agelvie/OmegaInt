@@ -1,4 +1,5 @@
-#include "24Karat.hpp"
+#include "OmegaInt.hpp"
+
 void bug()
 {
 	static unsigned i = 0;
