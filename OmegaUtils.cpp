@@ -1,7 +1,5 @@
 #include "OmegaUtils.hpp"
 
-
-
 namespace OmegaUtils
 {
 	void swap( OmegaInt &A, OmegaInt &B )
