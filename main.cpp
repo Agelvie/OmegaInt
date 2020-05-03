@@ -55,8 +55,6 @@ int main(int argc, char const *argv[])
 	OmegaInt A = 0;
 	// cout << "A = " << A << endl;
 
-	X = A + A;
-
 	if (argc == 1 or compare(argv[1],"help"))
 	{
 		cout << "No parameters where given so no test will be run\nThe options are:\n";
