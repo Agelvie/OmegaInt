@@ -1,5 +1,7 @@
 # OmegaInt
 
+[![CodeFactor](https://www.codefactor.io/repository/github/matiasagelvis/omegaint/badge)](https://www.codefactor.io/repository/github/matiasagelvis/omegaint)
+
 Store arbitrarily big integers in C++
 
 This library is intended to add arbitrarily long ints to C++ in a convenient and  versatile way, it is not has tight in memory has others, for every 64 bits in memory one is wasted, but hopefully it compensates in versatility with the ability to make operations between OmegaInt's and other numerical types and std::strings, like 
