@@ -1,6 +1,7 @@
 # OmegaInt
 
 [![CodeFactor](https://www.codefactor.io/repository/github/matiasagelvis/omegaint/badge)](https://www.codefactor.io/repository/github/matiasagelvis/omegaint)
+![Size](https://github-size-badge.herokuapp.com/matiasagelvis/omegaint.svg)
 
 Store arbitrarily big integers in C++
 
